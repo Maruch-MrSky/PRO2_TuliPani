@@ -1,0 +1,53 @@
+package cz.uhk.pro2.tulipani.domain.entity;
+
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "task", schema = "public")
+public class Task {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "task_id")
+    private Long taskId;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(columnDefinition = "text")
+    private String description;
+
+    private LocalDate deadline;
+
+    @Column(nullable = false)
+    private String state;
+
+    @Column(name = "todolist_id")
+    private Long todolistId;
+
+    @Column(name = "category_id")
+    private Long categoryId;
+
+    @Column(name = "task_creator")
+    private Long taskCreator;
+
+    @Column(name = "updated_by")
+    private Long updatedBy;
+}
