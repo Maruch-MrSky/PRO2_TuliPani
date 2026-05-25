@@ -29,4 +29,16 @@ public class TodolistService {
     public void removeUserFromTodolist(Long todolistId, Long userId) {
         throw new UnsupportedOperationException("TODO: remove user from todolist");
     }
+
+    public java.util.List<TodolistResponse> listTodolists(String authId) {
+        throw new UnsupportedOperationException("TODO: list todolists");
+    }
+
+    public TodolistResponse getTodolist(Long id, String authId) {
+        throw new UnsupportedOperationException("TODO: get todolist");
+    }
+
+    public void deleteTodolist(Long id, String authId) {
+        throw new UnsupportedOperationException("TODO: delete todolist");
+    }
 }

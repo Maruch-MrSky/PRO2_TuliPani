@@ -1,138 +1,138 @@
-# Rozdělení práce — týmový plán (vyvážená verze)
+# Rozdělení práce — týmový plán
 
-Cíl: mít rozdělení, které je smysluplné, navazující a přibližně stejně náročné pro všechny 3 studenty. Frontend zůstává společná práce na konci.
+Cíl: mít jasné, navazující a spravedlivě rozdělené úkoly pro 3 studenty; backend bude připraven před společným frontendem.
+
+## Souhrnný stav (checklist)
+
+- [x] Vytvořit `rozdeleni-prace.md`
+- [ ] Student 1 — API & Controllers (probíhá)
+- [ ] Student 2 — Business & ORM
+- [ ] Student 3 — DB, testy, integrace
+- [ ] Frontend — společná práce
+- [ ] Dokumentace & nasazení
 
 ## Shrnutí rolí
-- Student 1: API vrstva + kontrakty + validační/chybová vrstva + část testů
-- Student 2: ORM + business logika + oprávnění + část autentizace
-- Student 3: databáze + migrace + seed + integrace + část autentizace
-- Všichni: Frontend (společně, na konci)
-
-## Odhad zátěže (backend)
-- Student 1: ~33 %
-- Student 2: ~34 %
-- Student 3: ~33 %
+- Student 1: HTTP vrstva, DTO, validace, jednotné zpracování chyb, controller testy, API dokumentace
+- Student 2: JPA entity, repository, service logika, transakce, audit
+- Student 3: databáze, migrace, seed, integrační testy, runtime konfigurace
 
 ---
 
-## Timeline implementace (pořadí a návaznost)
-1. Dny 0–1: společný kick-off
-- sjednotit názvosloví endpointů, DTO a status kódů
-- připravit branch strategii, Definition of Done, code style
+## Timeline (pořadí a návaznost)
 
-2. Dny 1–3: databázový a doménový základ
-- Student 2: entity + vztahy + repository návrh
-- Student 3: připojení DB, migrace, start seed skriptů
-- Student 1: návrh API kontraktů (request/response), validace, error model
+1) Dny 0–1 — Kick-off
+- [x] sjednotit názvosloví endpointů, DTO a status kódů
+- [x] připravit branch strategii, Definition of Done, code style
 
-3. Dny 3–6: první funkční backend vertikála
-- Student 2: service metody pro todolists + tasks
-- Student 1: controllery pro todolists + tasks (napojení na service)
-- Student 3: integrační test prostředí, data fixtures, smoke testy
+2) Dny 1–3 — DB & doména
+- [ ] Student 2: entity + vztahy + repository návrh
+- [ ] Student 3: připojení DB, migrace, seed skripty
+- [x] Student 1: návrh API kontraktů (request/response), validace, error model
 
-4. Dny 6–8: autentizace a role
-- Student 2: bezpečnostní logika (role pravidla v service)
-- Student 3: JWT integrace, filtry a environment konfigurace
-- Student 1: auth endpointy + chybové scénáře + API dokumentace auth flow
+3) Dny 3–6 — První backend vertikála
+- [ ] Student 2: service metody pro todolists + tasks
+- [ ] Student 1: controllery pro todolists + tasks (bez business logiky)
+- [ ] Student 3: integrační test prostředí, fixtures, smoke testy
 
-5. Dny 8–10: stabilizace backendu
-- Student 1: controller testy + API dokumentace + Postman kolekce
-- Student 2: business unit testy a edge-case validace
-- Student 3: integrační testy, seed finalizace, ladění propojení
+4) Dny 6–8 — Autentizace a role
+- [ ] Student 2: bezpečnostní logika v service (role pravidla)
+- [ ] Student 3: JWT integrace, filtry, env konfigurace
+- [ ] Student 1: auth endpointy, chybové scénáře, API dokumentace auth flow
 
-6. Dny 10–14: frontend (společně)
-- jednoduché UI nad stabilním API
+5) Dny 8–10 — Stabilizace
+- [ ] Student 1: controller testy, API dokumentace, Postman kolekce
+- [ ] Student 2: business unit testy a edge-case validace
+- [ ] Student 3: integrační testy, seed finalizace, ladění propojení
+
+6) Dny 10–14 — Frontend (společně)
+- jednoduché UI: login, todolisty, tasky, komentáře, přílohy
 
 ---
 
-## Student 1 — API & Controllers (rovnoměrně rozšířeno)
+### Timeline checklist
+
+- [x] Dny 0–1: Kick-off
+- [x] Dny 1–3: DB & doména (návrhy)
+- [ ] Dny 3–6: první backend vertikála
+- [ ] Dny 6–8: autentizace a role
+- [ ] Dny 8–10: stabilizace
+- [ ] Dny 10–14: frontend
+
+
+## Student 1 — API & Controllers
 ### Hlavní odpovědnost
-HTTP vrstva, DTO kontrakty, validace vstupů, jednotný error handling, API dokumentace.
+HTTP vrstva, DTO kontrakty, validace vstupů, jednotné zpracování chyb, controller testy a API dokumentace.
 
-### TODO
-- Implementovat endpointy podle `project-spec.md`:
-  - `/api/auth/*`, `/api/users/me`, `/api/todolists/*`, `/api/tasks/*`, comments, attachments.
-- Vytvořit DTO request/response pro všechny endpointy.
-- Přidat Bean Validation (`@NotBlank`, `@Email`, `@Size`, atd.).
-- Zavést globální `@ControllerAdvice` pro jednotné chyby.
-- Připravit OpenAPI/Postman kolekci + ukázkové payloady.
-- Napsat controller testy (pozitivní + negativní scénáře).
+### TODO (Student 1)
+- [ ] Implementovat všechny endpointy podle `project-spec.md`
+- [x] Vytvořit DTO request/response (část implementována)
+- [ ] Přidat Bean Validation (`@NotBlank`, `@Email`, `@Size`)
+- [x] Zavést globální `@ControllerAdvice` pro jednotné chyby
+- [ ] Připravit OpenAPI / Postman kolekci
+- [x] Napsat základní controller testy (MockMvc)
 
 ### Deliverables
-- Stabilní REST API vrstva.
-- Dokumentované API kontrakty.
-- Sada testů pro controller vrstvu.
+- Stabilní REST API vrstva (kontrakty)
+- Jednotné chybové odpovědi a validace
+- Sada controller testů
 
 ---
 
 ## Student 2 — Business logika & ORM
 ### Hlavní odpovědnost
-Doménové mapování, repository vrstva, service logika, role pravidla a konzistence dat.
+Doménové mapování (JPA), repository vrstva, service logika, role pravidla, transakce a audit.
 
-### TODO
-- Z `supabase_schema.sql` domapovat JPA entity a relace.
-- Připravit/rozšířit repository dotazy pro hlavní use-cases.
-- Implementovat service metody:
-  - `createTodolist`, `addUserToTodolist`, `removeUserFromTodolist`
-  - `createTask`, `assignUserToTask`, `unassignUserFromTask`, `updateTaskStatus`, `deleteTask`
-- Zapracovat business validace:
-  - existence entit, duplicity, povolené stavy tasku, oprávnění podle role.
-- Přidat transakční hranice (`@Transactional`) a zápis do `audit_log`.
-- Podílet se na auth logice: mapování `auth_id` -> `AppUser` a role vyhodnocení v service.
+### TODO (Student 2)
+- [ ] Namapovat JPA entity a relace ze `supabase_schema.sql`
+- [ ] Připravit repository dotazy pro hlavní use-cases
+- [ ] Implementovat service metody (např. `createTodolist`, `addUserToTodolist`)
+- [ ] Zapracovat business validace a transakce
+- [ ] Zajistit zápis do `audit_log`
+- [ ] Napsat unit testy pro service
 
 ### Deliverables
-- Kompletní service vrstva s business pravidly.
-- ORM model odpovídající DB.
-- Unit testy pro kritické service scénáře.
+- Kompletní service vrstva s business pravidly
+- ORM model odpovídající DB
+- Jednotkové testy kritických scénářů
 
 ---
 
-## Student 3 — DB + testy + integrace
+## Student 3 — DB, testy a integrace
 ### Hlavní odpovědnost
-Databázová infrastruktura, migrace, seed data, integrační testy, běhová stabilita.
+Databázová infrastruktura, migrace, seed data, integrační testy, runtime konfigurace.
 
-### TODO
-- Připravit databázový běh projektu (lokální Postgres/Supabase).
-- Zvolit a nakonfigurovat migrace (Flyway/Liquibase) nebo jasný SQL import workflow.
-- Připravit seed data:
-  - role, test user, ukázkový list, tasky, vazby.
-- Dotáhnout integrační konfiguraci ORM a environment proměnné.
-- Implementovat integrační testy:
-  - repository + service + security flow.
-- Ladit propojení backendu s DB (nullable, constraints, enumy, timezone).
-- Podílet se na auth technické části: JWT konfigurace, filtry, test scénáře tokenů.
+### TODO (Student 3)
+- [ ] Připravit lokální DB běh (Postgres / Supabase)
+- [ ] Vybrat a nakonfigurovat migrace (Flyway/Liquibase) nebo SQL import
+- [ ] Připravit seed data (role, test user, ukázkový list)
+- [ ] Nastavit integrační testy (Testcontainers / fixtures)
+- [ ] Ladit propojení backendu s DB
+- [ ] Implementovat JWT integraci a test scénáře
 
 ### Deliverables
-- Reprodukovatelné DB prostředí.
-- Seed a integrační testy s návodem spuštění.
-- Stabilní propojení backendu s databází.
+- Reprodukovatelné DB prostředí a seed
+- Integrační testy a návod ke spuštění
+- Stabilní propojení backendu s databází
 
 ---
 
-## Frontend — společná práce (všichni, beze změny)
+## Frontend — společná práce (všichni)
 ### Cíl
 Jednoduché UI pro login, práci se seznamy a úkoly, komentáře a přílohy.
 
-### TODO
-- Vybrat jednoduchý stack (doporučeno React + Vite).
-- Implementovat obrazovky:
-  - Login
-  - Todolist list/detail
-  - Task detail + změna stavu
-  - Comment form
-  - Attachment upload
-- Napojit UI na hotové API.
-- Ověřit základní uživatelské scénáře end-to-end.
+### TODO (Frontend)
+- [ ] Vybrat stack (doporučeno React + Vite)
+- [ ] Implementovat obrazovky: Login, Todolist list/detail, Task detail, Comment form, Attachment upload
+- [ ] Napojit UI na hotové API
+- [ ] Ověřit základní uživatelské scénáře end-to-end
 
 ---
 
 ## Pravidla spolupráce
-- Každý student vlastní svůj backend modul, ale PR review dělá vždy aspoň 1 další člen.
-- Denní krátký sync (15–20 min): blokery, změny v kontraktech, rizika.
-- Změna API kontraktu je možná jen po informování všech.
-- Každý merge musí obsahovat:
-  - testy pro změněnou logiku
-  - krátký changelog v popisu PR
+- Každý student vlastní svůj backend modul, PR review vždy minimálně 1 další člen
+- Denní krátký sync (15–20 min): blokery, změny v kontraktech, rizika
+- Změna API kontraktu jen po informování všech členů a souhlasném review
+- Každý merge musí obsahovat testy pro změněnou logiku a krátký changelog v popisu PR
 
 ---
 
