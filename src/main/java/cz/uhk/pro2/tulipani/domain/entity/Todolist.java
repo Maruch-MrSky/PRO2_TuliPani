@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,6 @@ public class Todolist {
     @Column(name = "list_type")
     private String listType;
 
-    @OneToMany(mappedBy = "todolist", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "todolist", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks;
 }
