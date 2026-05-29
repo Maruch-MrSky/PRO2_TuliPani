@@ -190,7 +190,7 @@ public class TaskService {
             throw new IllegalStateException("Actor lacks permission to update task status");
         }
 
-        var status = request.status();
+        var status = request.state();
         if (status == null || !(status.equals("todo") || status.equals("in_progress") || status.equals("done"))) {
             throw new IllegalArgumentException("Invalid status");
         }
