@@ -11,5 +11,5 @@ public record TaskResponse(
         Long todolistId,
         Long categoryId,
         Long taskCreator,
-        Long updatedBy) {
+        String updatedBy) {
 }

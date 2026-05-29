@@ -1,6 +1,6 @@
 package cz.uhk.pro2.tulipani.domain.entity;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,7 +32,7 @@ public class AuditLog {
     private String action;
 
     @Column(name = "log_time", nullable = false)
-    private OffsetDateTime logTime;
+    private LocalDateTime logTime;
 
     @Column(name = "user_id")
     private Long userId;

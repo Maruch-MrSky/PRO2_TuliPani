@@ -55,7 +55,7 @@ class TaskServiceTest {
         var todolist = cz.uhk.pro2.tulipani.domain.entity.Todolist.builder().todolistId(2L).name("Team").build();
         when(todolistRepository.findById(2L)).thenReturn(java.util.Optional.of(todolist));
 
-        var saved = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(7L).name("Demo task").description("TODO").deadline(LocalDate.now()).state("todo").todolistId(2L).categoryId(1L).taskCreator(20L).updatedBy(20L).build();
+        var saved = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(7L).name("Demo task").description("TODO").deadline(LocalDate.now()).state("todo").todolistId(2L).categoryId(1L).taskCreator(20L).updatedBy(authId).build();
         when(taskRepository.save(any(cz.uhk.pro2.tulipani.domain.entity.Task.class))).thenReturn(saved);
 
         when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.of(new cz.uhk.pro2.tulipani.domain.entity.Category()));
@@ -78,7 +78,7 @@ class TaskServiceTest {
 
         when(appUserRepository.findByAuthId(authId)).thenReturn(java.util.Optional.of(user));
 
-        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(11L).name("Existing").description("Desc").deadline(LocalDate.now()).state("in_progress").todolistId(3L).categoryId(2L).taskCreator(30L).updatedBy(30L).build();
+        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(11L).name("Existing").description("Desc").deadline(LocalDate.now()).state("in_progress").todolistId(3L).categoryId(2L).taskCreator(30L).updatedBy(authId).build();
         when(taskRepository.findById(11L)).thenReturn(java.util.Optional.of(task));
 
         var resp = taskService.getTask(11L, authId);

@@ -52,7 +52,7 @@ public class Task {
     private Long taskCreator;
 
     @Column(name = "updated_by")
-    private Long updatedBy;
+    private String updatedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todolist_id", insertable = false, updatable = false)

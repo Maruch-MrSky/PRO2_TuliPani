@@ -29,16 +29,16 @@ public class AppUser {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(nullable = false)
+    @Column
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String surname;
 
-    @Column(name = "auth_id", nullable = false)
+    @Column(name = "auth_id")
     private String authId;
 
     @Column(name = "app_role_id")

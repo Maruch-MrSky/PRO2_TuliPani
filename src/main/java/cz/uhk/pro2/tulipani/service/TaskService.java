@@ -45,15 +45,15 @@ public class TaskService {
             .state("todo")
             .todolistId(request.todolistId())
             .categoryId(request.categoryId())
-            .taskCreator(user.getUserId())
-            .updatedBy(user.getUserId())
+                .taskCreator(user.getUserId())
+                .updatedBy(user.getAuthId())
             .build();
 
         task = taskRepository.save(task);
 
         var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
             .action("create_task")
-            .logTime(java.time.OffsetDateTime.now())
+            .logTime(java.time.LocalDateTime.now())
             .userId(user.getUserId())
             .taskId(task.getTaskId())
             .build();
@@ -117,7 +117,7 @@ public class TaskService {
 
             var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
                 .action("assign_user_to_task")
-                .logTime(java.time.OffsetDateTime.now())
+                .logTime(java.time.LocalDateTime.now())
                 .userId(actor.getUserId())
                 .taskId(taskId)
                 .build();
@@ -153,7 +153,7 @@ public class TaskService {
 
             var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
                 .action("unassign_user_from_task")
-                .logTime(java.time.OffsetDateTime.now())
+                .logTime(java.time.LocalDateTime.now())
                 .userId(actor.getUserId())
                 .taskId(taskId)
                 .build();
@@ -196,16 +196,16 @@ public class TaskService {
         }
 
         task.setState(status);
-        task.setUpdatedBy(actor.getUserId());
+        task.setUpdatedBy(actor.getAuthId());
 
         task = taskRepository.save(task);
 
         var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
-                .action("update_task_status")
-                .logTime(java.time.OffsetDateTime.now())
-                .userId(actor.getUserId())
-                .taskId(task.getTaskId())
-                .build();
+            .action("update_task_status")
+            .logTime(java.time.LocalDateTime.now())
+            .userId(actor.getUserId())
+            .taskId(task.getTaskId())
+            .build();
 
         auditLogRepository.save(audit);
 
@@ -249,11 +249,11 @@ public class TaskService {
         taskRepository.delete(task);
 
         var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
-                .action("delete_task")
-                .logTime(java.time.OffsetDateTime.now())
-                .userId(actor.getUserId())
-                .taskId(task.getTaskId())
-                .build();
+            .action("delete_task")
+            .logTime(java.time.LocalDateTime.now())
+            .userId(actor.getUserId())
+            .taskId(task.getTaskId())
+            .build();
 
         auditLogRepository.save(audit);
     }

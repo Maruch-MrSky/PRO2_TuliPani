@@ -72,7 +72,7 @@ public class TodolistService {
 
         var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
             .action("add_user_to_todolist")
-            .logTime(java.time.OffsetDateTime.now())
+            .logTime(java.time.LocalDateTime.now())
             .userId(userId)
             .taskId(null)
             .build();
@@ -88,7 +88,7 @@ public class TodolistService {
 
         var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
             .action("remove_user_from_todolist")
-            .logTime(java.time.OffsetDateTime.now())
+            .logTime(java.time.LocalDateTime.now())
             .userId(userId)
             .taskId(null)
             .build();
@@ -145,7 +145,7 @@ public class TodolistService {
 
         var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
             .action("delete_todolist")
-            .logTime(java.time.OffsetDateTime.now())
+            .logTime(java.time.LocalDateTime.now())
             .userId(actor.getUserId())
             .taskId(null)
             .build();

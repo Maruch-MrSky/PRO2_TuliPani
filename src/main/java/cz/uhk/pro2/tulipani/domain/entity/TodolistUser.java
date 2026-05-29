@@ -35,7 +35,7 @@ public class TodolistUser {
     @Column(name = "todolist_id")
     private Long todolistId;
 
-    @Column(name = "role_id")
+    @Column(name = "role_id", nullable = false)
     private Long roleId;
 
     @Column(name = "is_list_creator")
