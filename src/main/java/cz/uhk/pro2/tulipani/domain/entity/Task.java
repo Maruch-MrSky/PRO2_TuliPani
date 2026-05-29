@@ -1,6 +1,6 @@
 package cz.uhk.pro2.tulipani.domain.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,15 +31,15 @@ public class Task {
     @Column(name = "task_id")
     private Long taskId;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
     @Column(columnDefinition = "text")
     private String description;
 
-    private LocalDate deadline;
+    private LocalDateTime deadline;
 
-    @Column(nullable = false)
+    @Column
     private String state;
 
     @Column(name = "todolist_id")
