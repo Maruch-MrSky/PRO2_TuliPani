@@ -28,7 +28,7 @@ public class TaskComment {
     @Column(name = "comment_id")
     private Long commentId;
 
-    @Column(columnDefinition = "text", nullable = false)
+    @Column(columnDefinition = "text")
     private String text;
 
     @Column(name = "created_at")
