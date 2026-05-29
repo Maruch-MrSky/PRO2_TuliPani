@@ -43,7 +43,8 @@ public class AppUser {
 
     @Column(name = "app_role_id")
     private Long appRoleId;
-}
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_role_id", insertable = false, updatable = false)
     private AppRole appRole;
+}

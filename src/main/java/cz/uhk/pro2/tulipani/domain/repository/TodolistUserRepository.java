@@ -8,4 +8,8 @@ public interface TodolistUserRepository extends JpaRepository<TodolistUser, Long
 
 	List<TodolistUser> findByUserId(Long userId);
 
+	boolean existsByTodolistIdAndUserId(Long todolistId, Long userId);
+
+	java.util.Optional<TodolistUser> findByTodolistIdAndUserId(Long todolistId, Long userId);
+
 }
