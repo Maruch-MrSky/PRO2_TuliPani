@@ -139,4 +139,42 @@ class TaskServiceTest {
         verify(taskUserRepository).delete(tu);
         verify(auditLogRepository).save(any());
     }
+
+    @Test
+    void updateTaskStatus_allowsAuthorizedUser() {
+        var authId = "auth-st";
+        var actor = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(60L).authId(authId).build();
+        when(appUserRepository.findByAuthId(authId)).thenReturn(java.util.Optional.of(actor));
+
+        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(70L).name("S").todolistId(30L).taskCreator(60L).state("todo").build();
+        when(taskRepository.findById(70L)).thenReturn(java.util.Optional.of(task));
+
+        when(taskRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(auditLogRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        var req = new cz.uhk.pro2.tulipani.web.dto.UpdateTaskStatusRequest("in_progress");
+        var resp = taskService.updateTaskStatus(70L, req, authId);
+
+        org.assertj.core.api.Assertions.assertThat(resp).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(resp.state()).isEqualTo("in_progress");
+        verify(auditLogRepository).save(any());
+    }
+
+    @Test
+    void deleteTask_allowsAuthorizedUser() {
+        var authId = "auth-del";
+        var actor = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(80L).authId(authId).build();
+        when(appUserRepository.findByAuthId(authId)).thenReturn(java.util.Optional.of(actor));
+
+        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(81L).todolistId(40L).taskCreator(80L).build();
+        when(taskRepository.findById(81L)).thenReturn(java.util.Optional.of(task));
+
+        when(taskUserRepository.findByTaskId(81L)).thenReturn(java.util.List.of());
+        when(auditLogRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        taskService.deleteTask(81L, authId);
+
+        verify(taskRepository).delete(task);
+        verify(auditLogRepository).save(any());
+    }
 }

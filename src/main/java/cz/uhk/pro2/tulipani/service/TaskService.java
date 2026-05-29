@@ -162,10 +162,99 @@ public class TaskService {
             }
 
     public TaskResponse updateTaskStatus(Long taskId, UpdateTaskStatusRequest request, String authId) {
-        throw new UnsupportedOperationException("TODO: update task status");
+        var actor = appUserRepository.findByAuthId(authId)
+                .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+
+        var task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+
+        var allowed = false;
+
+        if (task.getTaskCreator() != null && task.getTaskCreator().equals(actor.getUserId())) {
+            allowed = true;
+        }
+
+        if (!allowed && taskUserRepository.existsByTaskIdAndUserId(taskId, actor.getUserId())) {
+            allowed = true;
+        }
+
+        if (!allowed) {
+            var membership = todolistUserRepository.findByTodolistIdAndUserId(task.getTodolistId(), actor.getUserId());
+            if (membership.isPresent()) {
+                var m = membership.get();
+                allowed = Boolean.TRUE.equals(m.getIsListCreator()) || (m.getRole() != null && "spravce".equalsIgnoreCase(m.getRole().getRoleName()));
+            }
+        }
+
+        if (!allowed) {
+            throw new IllegalStateException("Actor lacks permission to update task status");
+        }
+
+        var status = request.status();
+        if (status == null || !(status.equals("todo") || status.equals("in_progress") || status.equals("done"))) {
+            throw new IllegalArgumentException("Invalid status");
+        }
+
+        task.setState(status);
+        task.setUpdatedBy(actor.getUserId());
+
+        task = taskRepository.save(task);
+
+        var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
+                .action("update_task_status")
+                .logTime(java.time.OffsetDateTime.now())
+                .userId(actor.getUserId())
+                .taskId(task.getTaskId())
+                .build();
+
+        auditLogRepository.save(audit);
+
+        return new TaskResponse(task.getTaskId(), task.getName(), task.getDescription(), task.getDeadline(), task.getState(), task.getTodolistId(), task.getCategoryId(), task.getTaskCreator(), task.getUpdatedBy());
     }
 
     public void deleteTask(Long taskId, String authId) {
-        throw new UnsupportedOperationException("TODO: delete task with permission checks");
+        var actor = appUserRepository.findByAuthId(authId)
+                .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+
+        var task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+
+        var allowed = false;
+        if (task.getTaskCreator() != null && task.getTaskCreator().equals(actor.getUserId())) {
+            allowed = true;
+        }
+
+        if (!allowed && taskUserRepository.existsByTaskIdAndUserId(taskId, actor.getUserId())) {
+            allowed = true;
+        }
+
+        if (!allowed) {
+            var membership = todolistUserRepository.findByTodolistIdAndUserId(task.getTodolistId(), actor.getUserId());
+            if (membership.isPresent()) {
+                var m = membership.get();
+                allowed = Boolean.TRUE.equals(m.getIsListCreator()) || (m.getRole() != null && "spravce".equalsIgnoreCase(m.getRole().getRoleName()));
+            }
+        }
+
+        if (!allowed) {
+            throw new IllegalStateException("Actor lacks permission to delete task");
+        }
+
+        // remove task users
+        var users = taskUserRepository.findByTaskId(taskId);
+        if (users != null && !users.isEmpty()) {
+            taskUserRepository.deleteAll(users);
+        }
+
+        taskRepository.delete(task);
+
+        var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
+                .action("delete_task")
+                .logTime(java.time.OffsetDateTime.now())
+                .userId(actor.getUserId())
+                .taskId(task.getTaskId())
+                .build();
+
+        auditLogRepository.save(audit);
     }
 }
