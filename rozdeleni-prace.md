@@ -90,6 +90,20 @@ Doménové mapování (JPA), repository vrstva, service logika, role pravidla, t
 - [ ] Zajistit zápis do `audit_log`
 - [ ] Napsat unit testy pro service
 
+### Stav implementace (aktuálně - Student 2)
+- [x] Namapovat JPA entity a relace (entities present in `src/main/java/.../domain/entity`)
+- [x] Připravit repository dotazy pro hlavní use-cases (additional helpers added)
+- [x] Implementovat základní service metody:
+	- [x] `createTodolist`, `listTodolists`
+	- [x] `createTask`, `getTask`
+	- [x] `assignUserToTask`, `unassignUserFromTask` (task-level assignment)
+	- [ ] `addUserToTodolist`, `removeUserFromTodolist` (todolist-level membership — in progress)
+	- [ ] `updateTaskStatus`, `deleteTask` (pending)
+- [x] Zajistit zápis do `audit_log` pro vytvoření úkolu a přiřazení/odebrání uživatele
+- [~] Jednotkové testy: `TodolistService` tests present; `TaskService` tests added for create/get/assign/unassign; more tests pending for status/delete
+
+Poznámka: během práce byly přidány ochrany proti duplicitám a základní role checks pro přiřazování/odebíraní uživatelů.
+
 ### Deliverables
 - Kompletní service vrstva s business pravidly
 - ORM model odpovídající DB
