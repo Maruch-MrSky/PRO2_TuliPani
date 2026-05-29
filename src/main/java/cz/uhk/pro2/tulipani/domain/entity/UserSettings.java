@@ -26,7 +26,7 @@ public class UserSettings {
     @Column(name = "user_settings_id")
     private Long userSettingsId;
 
-    @Column(columnDefinition = "text")
+    @Column(length = 600)
     private String preferences;
 
     @Column(name = "user_id")

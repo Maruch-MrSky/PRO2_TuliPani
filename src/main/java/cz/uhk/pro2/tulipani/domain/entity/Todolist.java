@@ -30,7 +30,7 @@ public class Todolist {
     @Column(name = "todolist_id")
     private Long todolistId;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
     @Column(name = "list_type")

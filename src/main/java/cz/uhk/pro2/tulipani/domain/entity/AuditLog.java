@@ -28,10 +28,10 @@ public class AuditLog {
     @Column(name = "audit_log_id")
     private Long auditLogId;
 
-    @Column(nullable = false)
+    @Column
     private String action;
 
-    @Column(name = "log_time", nullable = false)
+    @Column(name = "log_time")
     private LocalDateTime logTime;
 
     @Column(name = "user_id")

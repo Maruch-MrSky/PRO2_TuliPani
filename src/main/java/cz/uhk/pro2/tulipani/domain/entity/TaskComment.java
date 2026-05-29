@@ -31,7 +31,7 @@ public class TaskComment {
     @Column(columnDefinition = "text", nullable = false)
     private String text;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "user_id")

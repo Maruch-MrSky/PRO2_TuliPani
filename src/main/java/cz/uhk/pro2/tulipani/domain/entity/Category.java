@@ -26,7 +26,7 @@ public class Category {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
     @Column(name = "color_hex")
