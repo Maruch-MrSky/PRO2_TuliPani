@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Spring Boot (Supabase)",
+      "type": "shell",
+      "command": ".\\mvnw.cmd",
+      "args": [
+        "spring-boot:run"
+      ],
+      "options": {
+        "env": {
+          "SPRING_PROFILES_ACTIVE": "supabase"
+        }
+      },
+      "problemMatcher": []
+    }
+  ]
+}

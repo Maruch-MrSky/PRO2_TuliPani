@@ -1,1 +1,9 @@
 target
+
+# Local environment overrides (do NOT commit secrets)
+.env
+.env.*
+!.env.example
+
+# Maven Wrapper runtime artifacts (downloaded)
+.mvn/wrapper/maven-wrapper.jar

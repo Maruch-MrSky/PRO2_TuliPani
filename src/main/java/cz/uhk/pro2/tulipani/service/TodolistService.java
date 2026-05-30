@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cz.uhk.pro2.tulipani.domain.repository.AuditLogRepository;
+import org.springframework.context.annotation.Profile;
 
 @Service
+@Profile("!supabase-api")
 @RequiredArgsConstructor
 public class TodolistService {
 

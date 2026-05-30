@@ -1,6 +1,6 @@
 package cz.uhk.pro2.tulipani.web.controller;
 
-import cz.uhk.pro2.tulipani.service.TaskService;
+import cz.uhk.pro2.tulipani.service.port.TaskOperations;
 import cz.uhk.pro2.tulipani.web.dto.CreateTaskRequest;
 import cz.uhk.pro2.tulipani.web.dto.TaskResponse;
 import cz.uhk.pro2.tulipani.web.dto.UpdateTaskStatusRequest;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TaskController {
 
-    private final TaskService taskService;
+    private final TaskOperations taskService;
 
     @PostMapping
     public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody CreateTaskRequest request,

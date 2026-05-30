@@ -2,7 +2,7 @@ package cz.uhk.pro2.tulipani.web.controller;
 
 import cz.uhk.pro2.tulipani.web.dto.TodolistResponse;
 import cz.uhk.pro2.tulipani.web.dto.CreateTodolistRequest;
-import cz.uhk.pro2.tulipani.service.TodolistService;
+import cz.uhk.pro2.tulipani.service.port.TodolistOperations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,7 +26,7 @@ class TodolistControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private TodolistService todolistService;
+        private TodolistOperations todolistService;
 
     @InjectMocks
     private TodolistController todolistController;

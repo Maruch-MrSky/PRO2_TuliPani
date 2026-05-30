@@ -1,6 +1,6 @@
 package cz.uhk.pro2.tulipani.web.controller;
 
-import cz.uhk.pro2.tulipani.service.TodolistService;
+import cz.uhk.pro2.tulipani.service.port.TodolistOperations;
 import cz.uhk.pro2.tulipani.web.dto.CreateTodolistRequest;
 import cz.uhk.pro2.tulipani.web.dto.TodolistResponse;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TodolistController {
 
-    private final TodolistService todolistService;
+    private final TodolistOperations todolistService;
 
     @GetMapping
     public ResponseEntity<List<TodolistResponse>> listTodolists(@RequestHeader(value = "X-Auth-Id", required = false) String authId) {

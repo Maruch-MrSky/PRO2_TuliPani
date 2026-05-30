@@ -7,8 +7,10 @@ import cz.uhk.pro2.tulipani.web.dto.AuthRegisterRequest;
 import cz.uhk.pro2.tulipani.web.dto.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Profile;
 
 @Service
+@Profile("!supabase-api")
 @RequiredArgsConstructor
 public class AuthService {
 

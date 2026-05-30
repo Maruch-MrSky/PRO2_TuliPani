@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cz.uhk.pro2.tulipani.domain.repository.TodolistUserRepository;
 
 @Service
+@org.springframework.context.annotation.Profile("!supabase-api")
 @RequiredArgsConstructor
 public class TaskService {
 
