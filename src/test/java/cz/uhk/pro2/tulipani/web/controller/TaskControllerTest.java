@@ -11,7 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doNothing;
@@ -33,7 +33,7 @@ class TaskControllerTest {
     @Test
     void createTask_returnsCreatedTask() {
         CreateTaskRequest request = new CreateTaskRequest("Task A", "Description", null, 1L, 2L);
-        TaskResponse response = new TaskResponse(10L, "Task A", "Description", null, "todo", 1L, 2L, 100L, 100L);
+        TaskResponse response = new TaskResponse(10L, "Task A", "Description", null, "todo", 1L, 2L, 100L, "100");
         when(taskService.createTask(request, "auth-1")).thenReturn(response);
 
         ResponseEntity<TaskResponse> result = taskController.createTask(request, "auth-1");
@@ -45,7 +45,7 @@ class TaskControllerTest {
     @Test
     void updateTaskStatus_returnsUpdatedTask() {
         UpdateTaskStatusRequest request = new UpdateTaskStatusRequest("done");
-        TaskResponse response = new TaskResponse(10L, "Task A", "Description", LocalDate.of(2026, 1, 10), "done", 1L, 2L, 100L, 101L);
+        TaskResponse response = new TaskResponse(10L, "Task A", "Description", LocalDateTime.of(2026, 1, 10, 0, 0), "done", 1L, 2L, 100L, "101");
         when(taskService.updateTaskStatus(10L, request, "auth-1")).thenReturn(response);
 
         ResponseEntity<TaskResponse> result = taskController.updateTaskStatus(10L, request, "auth-1");
