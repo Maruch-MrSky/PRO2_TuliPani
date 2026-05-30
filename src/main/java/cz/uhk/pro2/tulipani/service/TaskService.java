@@ -257,4 +257,9 @@ public class TaskService {
 
         auditLogRepository.save(audit);
     }
+
+    // new helper to list task users
+    public java.util.List<cz.uhk.pro2.tulipani.domain.entity.TaskUser> listUsersForTask(Long taskId) {
+        return taskUserRepository.findByTaskId(taskId);
+    }
 }

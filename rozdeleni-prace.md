@@ -53,7 +53,7 @@ Cíl: mít jasné, navazující a spravedlivě rozdělené úkoly pro 3 studenty
 
 - [x] Dny 0–1: Kick-off
 - [x] Dny 1–3: DB & doména (návrhy)
-- [ ] Dny 3–6: první backend vertikála
+- [~] Dny 3–6: první backend vertikála
 - [ ] Dny 6–8: autentizace a role
 - [ ] Dny 8–10: stabilizace
 - [ ] Dny 10–14: frontend
@@ -68,7 +68,7 @@ HTTP vrstva, DTO kontrakty, validace vstupů, jednotné zpracování chyb, contr
 - [x] Vytvořit DTO request/response (část implementována)
 - [x] Přidat Bean Validation (`@NotBlank`, `@Email`, `@Size`)
 - [x] Zavést globální `@ControllerAdvice` pro jednotné chyby
-- [ ] Připravit OpenAPI / Postman kolekci
+- [x] Připravit OpenAPI / Postman kolekci
 - [x] Napsat základní controller testy (MockMvc)
 
 ### Deliverables
@@ -89,8 +89,8 @@ Doménové mapování (JPA), repository vrstva, service logika, role pravidla, t
 	- [x] `createTodolist`, `listTodolists`
 	- [x] `createTask`, `getTask`
 	- [x] `assignUserToTask`, `unassignUserFromTask` (task-level assignment)
-	- [ ] `addUserToTodolist`, `removeUserFromTodolist` (todolist-level membership — in progress)
-	- [ ] `updateTaskStatus`, `deleteTask` (pending)
+	- [x] `addUserToTodolist`, `removeUserFromTodolist` (todolist-level membership)
+	- [x] `updateTaskStatus`, `deleteTask` (implemented)
 - [ ] Zapracovat business validace a transakce
 - [x] Zajistit zápis do `audit_log` pro vytvoření úkolu a přiřazení/odebrání uživatele
 - [~] Jednotkové testy: `TodolistService` tests present; `TaskService` tests added for create/get/assign/unassign; more tests pending for status/delete
