@@ -8,6 +8,6 @@ public record CreateTaskRequest(
         @NotBlank String name,
         String description,
         LocalDateTime deadline,
-        Long todolistId,
-        Long categoryId) {
+        Integer todolistId,
+        Integer categoryId) {
 }

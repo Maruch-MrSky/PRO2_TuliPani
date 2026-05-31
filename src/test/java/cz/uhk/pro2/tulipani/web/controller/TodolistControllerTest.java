@@ -44,7 +44,7 @@ class TodolistControllerTest {
     @Test
     void listTodolists_returnsList() throws Exception {
         when(todolistService.listTodolists("auth-1"))
-                .thenReturn(List.of(new TodolistResponse(1L, "List A", "personal")));
+                .thenReturn(List.of(new TodolistResponse((int) 1L, "List A", "personal")));
 
         mockMvc.perform(get("/api/todolists").header("X-Auth-Id", "auth-1"))
                 .andExpect(status().isOk())
@@ -55,7 +55,7 @@ class TodolistControllerTest {
     void createTodolist_validRequest_returnsCreated() throws Exception {
         CreateTodolistRequest req = new CreateTodolistRequest("New list", "personal");
         when(todolistService.createTodolist(req, "auth-1"))
-                .thenReturn(new TodolistResponse(2L, "New list", "personal"));
+                .thenReturn(new TodolistResponse((int) 2L, "New list", "personal"));
 
         mockMvc.perform(post("/api/todolists")
                         .contentType(MediaType.APPLICATION_JSON)

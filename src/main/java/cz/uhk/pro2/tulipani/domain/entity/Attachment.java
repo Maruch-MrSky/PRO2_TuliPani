@@ -24,7 +24,7 @@ public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "attachment_id")
-    private Long attachmentId;
+    private Integer attachmentId;
 
     @Column(name = "file_name")
     private String fileName;
@@ -33,5 +33,5 @@ public class Attachment {
     private String filePath;
 
     @Column(name = "task_id")
-    private Long taskId;
+    private Integer taskId;
 }

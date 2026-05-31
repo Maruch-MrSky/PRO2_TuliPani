@@ -29,7 +29,7 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
-    private Long taskId;
+    private Integer taskId;
 
     @Column
     private String name;
@@ -43,13 +43,13 @@ public class Task {
     private String state;
 
     @Column(name = "todolist_id")
-    private Long todolistId;
+    private Integer todolistId;
 
     @Column(name = "category_id")
-    private Long categoryId;
+    private Integer categoryId;
 
     @Column(name = "task_creator")
-    private Long taskCreator;
+    private Integer taskCreator;
 
     @Column(name = "updated_by")
     private String updatedBy;

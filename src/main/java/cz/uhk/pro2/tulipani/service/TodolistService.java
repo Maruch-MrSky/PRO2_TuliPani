@@ -50,7 +50,7 @@ public class TodolistService {
         return new TodolistResponse(todolist.getTodolistId(), todolist.getName(), todolist.getListType());
     }
 
-    public void addUserToTodolist(Long todolistId, Long userId, Long roleId) {
+    public void addUserToTodolist(Integer todolistId, Integer userId, Integer roleId) {
         var list = todolistRepository.findById(todolistId)
             .orElseThrow(() -> new IllegalArgumentException("Todolist not found"));
 
@@ -80,7 +80,7 @@ public class TodolistService {
         auditLogRepository.save(audit);
     }
 
-    public void removeUserFromTodolist(Long todolistId, Long userId) {
+    public void removeUserFromTodolist(Integer todolistId, Integer userId) {
         var tu = todolistUserRepository.findByTodolistIdAndUserId(todolistId, userId)
             .orElseThrow(() -> new IllegalArgumentException("Todolist membership not found"));
 
@@ -115,7 +115,7 @@ public class TodolistService {
                 .toList();
     }
 
-    public TodolistResponse getTodolist(Long id, String authId) {
+    public TodolistResponse getTodolist(Integer id, String authId) {
         var actor = appUserRepository.findByAuthId(authId)
             .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
@@ -127,7 +127,7 @@ public class TodolistService {
         return new TodolistResponse(t.getTodolistId(), t.getName(), t.getListType());
     }
 
-    public void deleteTodolist(Long id, String authId) {
+    public void deleteTodolist(Integer id, String authId) {
         var actor = appUserRepository.findByAuthId(authId)
             .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 

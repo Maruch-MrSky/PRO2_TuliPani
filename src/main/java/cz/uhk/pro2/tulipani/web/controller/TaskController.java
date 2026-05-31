@@ -32,7 +32,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable Long id,
+    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable Integer id,
                                                          @Valid @RequestBody UpdateTaskStatusRequest request,
                                                          @RequestHeader(value = "X-Auth-Id", required = false) String authId) {
         TaskResponse updated = taskService.updateTaskStatus(id, request, authId);
@@ -40,7 +40,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id,
+    public ResponseEntity<Void> deleteTask(@PathVariable Integer id,
                                            @RequestHeader(value = "X-Auth-Id", required = false) String authId) {
         taskService.deleteTask(id, authId);
         return ResponseEntity.noContent().build();

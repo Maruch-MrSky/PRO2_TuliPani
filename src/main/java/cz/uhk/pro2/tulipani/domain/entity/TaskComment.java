@@ -26,7 +26,7 @@ public class TaskComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Long commentId;
+    private Integer commentId;
 
     @Column(columnDefinition = "text")
     private String text;
@@ -34,9 +34,10 @@ public class TaskComment {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+
     @Column(name = "user_id")
-    private Long userId;
+    private Integer userId;
 
     @Column(name = "task_id")
-    private Long taskId;
+    private Integer taskId;
 }

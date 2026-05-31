@@ -24,11 +24,11 @@ public class UserSettings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_settings_id")
-    private Long userSettingsId;
-
+    private Integer userSettingsId;
     @Column(length = 600)
     private String preferences;
 
+    
     @Column(name = "user_id")
-    private Long userId;
+    private Integer userId;
 }

@@ -27,16 +27,16 @@ public class TodolistUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "todolist_users_id")
-    private Long todolistUsersId;
+    private Integer todolistUsersId;
 
     @Column(name = "user_id")
-    private Long userId;
+    private Integer userId;
 
     @Column(name = "todolist_id")
-    private Long todolistId;
+    private Integer todolistId;
 
     @Column(name = "role_id", nullable = false)
-    private Long roleId;
+    private Integer roleId;
 
     @Column(name = "is_list_creator")
     private Boolean isListCreator;

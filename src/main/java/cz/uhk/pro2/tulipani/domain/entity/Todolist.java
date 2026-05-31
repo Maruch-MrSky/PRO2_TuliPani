@@ -28,7 +28,7 @@ public class Todolist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "todolist_id")
-    private Long todolistId;
+    private Integer todolistId;
 
     @Column
     private String name;

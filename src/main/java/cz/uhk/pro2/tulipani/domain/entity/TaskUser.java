@@ -27,13 +27,13 @@ public class TaskUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_users_id")
-    private Long taskUsersId;
+    private Integer taskUsersId;
 
     @Column(name = "user_id")
-    private Long userId;
+    private Integer userId;
 
     @Column(name = "task_id")
-    private Long taskId;
+    private Integer taskId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)

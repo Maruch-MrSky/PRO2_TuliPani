@@ -63,7 +63,7 @@ public class TaskService {
         return new TaskResponse(task.getTaskId(), task.getName(), task.getDescription(), task.getDeadline(), task.getState(), task.getTodolistId(), task.getCategoryId(), task.getTaskCreator(), task.getUpdatedBy());
     }
 
-        public TaskResponse getTask(Long taskId, String authId) {
+        public TaskResponse getTask(Integer taskId, String authId) {
         var user = appUserRepository.findByAuthId(authId)
             .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
@@ -73,16 +73,16 @@ public class TaskService {
         return new TaskResponse(task.getTaskId(), task.getName(), task.getDescription(), task.getDeadline(), task.getState(), task.getTodolistId(), task.getCategoryId(), task.getTaskCreator(), task.getUpdatedBy());
         }
 
-    public void assignUserToTask(String actorAuthId, Long taskId, Long userId) {
+    public void assignUserToTask(String actorAuthId, Integer taskId, Integer userId) {
         assignUserToTaskInternal(actorAuthId, taskId, userId);
     }
 
-    public void unassignUserFromTask(String actorAuthId, Long taskId, Long userId) {
+    public void unassignUserFromTask(String actorAuthId, Integer taskId, Integer userId) {
         unassignUserFromTaskInternal(actorAuthId, taskId, userId);
     }
 
             @Transactional
-            void assignUserToTaskInternal(String actorAuthId, Long taskId, Long userId) {
+            void assignUserToTaskInternal(String actorAuthId, Integer taskId, Integer userId) {
             var task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
 
@@ -126,7 +126,7 @@ public class TaskService {
             }
 
             @Transactional
-            void unassignUserFromTaskInternal(String actorAuthId, Long taskId, Long userId) {
+            void unassignUserFromTaskInternal(String actorAuthId, Integer taskId, Integer userId) {
             var task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
 
@@ -161,7 +161,7 @@ public class TaskService {
             auditLogRepository.save(audit);
             }
 
-    public TaskResponse updateTaskStatus(Long taskId, UpdateTaskStatusRequest request, String authId) {
+    public TaskResponse updateTaskStatus(Integer taskId, UpdateTaskStatusRequest request, String authId) {
         var actor = appUserRepository.findByAuthId(authId)
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
@@ -212,7 +212,7 @@ public class TaskService {
         return new TaskResponse(task.getTaskId(), task.getName(), task.getDescription(), task.getDeadline(), task.getState(), task.getTodolistId(), task.getCategoryId(), task.getTaskCreator(), task.getUpdatedBy());
     }
 
-    public void deleteTask(Long taskId, String authId) {
+    public void deleteTask(Integer taskId, String authId) {
         var actor = appUserRepository.findByAuthId(authId)
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 

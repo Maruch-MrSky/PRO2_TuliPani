@@ -3,13 +3,13 @@ package cz.uhk.pro2.tulipani.web.dto;
 import java.time.LocalDateTime;
 
 public record TaskResponse(
-        Long taskId,
+        Integer taskId,
         String name,
         String description,
         LocalDateTime deadline,
         String state,
-        Long todolistId,
-        Long categoryId,
-        Long taskCreator,
+        Integer todolistId,
+        Integer categoryId,
+        Integer taskCreator,
         String updatedBy) {
 }

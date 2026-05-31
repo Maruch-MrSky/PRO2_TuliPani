@@ -48,20 +48,20 @@ class TaskServiceTest {
     @Test
     void createTask_savesTaskAndAudit() {
         var authId = "auth-1";
-        var user = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(20L).authId(authId).email("u@example.com").build();
+        var user = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(20).authId(authId).email("u@example.com").build();
 
         when(appUserRepository.findByAuthId(authId)).thenReturn(java.util.Optional.of(user));
 
-        var todolist = cz.uhk.pro2.tulipani.domain.entity.Todolist.builder().todolistId(2L).name("Team").build();
-        when(todolistRepository.findById(2L)).thenReturn(java.util.Optional.of(todolist));
+        var todolist = cz.uhk.pro2.tulipani.domain.entity.Todolist.builder().todolistId(2).name("Team").build();
+        when(todolistRepository.findById(2)).thenReturn(java.util.Optional.of(todolist));
 
-        var saved = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(7L).name("Demo task").description("TODO").deadline(LocalDateTime.now()).state("todo").todolistId(2L).categoryId(1L).taskCreator(20L).updatedBy(authId).build();
+        var saved = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(7).name("Demo task").description("TODO").deadline(LocalDateTime.now()).state("todo").todolistId(2).categoryId(1).taskCreator(20).updatedBy(authId).build();
         when(taskRepository.save(any(cz.uhk.pro2.tulipani.domain.entity.Task.class))).thenReturn(saved);
 
-        when(categoryRepository.findById(1L)).thenReturn(java.util.Optional.of(new cz.uhk.pro2.tulipani.domain.entity.Category()));
+        when(categoryRepository.findById(1)).thenReturn(java.util.Optional.of(new cz.uhk.pro2.tulipani.domain.entity.Category()));
         when(auditLogRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        var req = new CreateTaskRequest("Demo task", "TODO", LocalDateTime.now(), 2L, 1L);
+        var req = new CreateTaskRequest("Demo task", "TODO", LocalDateTime.now(), 2, 1);
         var resp = taskService.createTask(req, authId);
 
         org.assertj.core.api.Assertions.assertThat(resp).isNotNull();
@@ -74,14 +74,14 @@ class TaskServiceTest {
     @Test
     void getTask_returnsTaskData() {
         var authId = "auth-2";
-        var user = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(30L).authId(authId).email("u2@example.com").build();
+        var user = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(30).authId(authId).email("u2@example.com").build();
 
         when(appUserRepository.findByAuthId(authId)).thenReturn(java.util.Optional.of(user));
 
-        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(11L).name("Existing").description("Desc").deadline(LocalDateTime.now()).state("in_progress").todolistId(3L).categoryId(2L).taskCreator(30L).updatedBy(authId).build();
-        when(taskRepository.findById(11L)).thenReturn(java.util.Optional.of(task));
+        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(11).name("Existing").description("Desc").deadline(LocalDateTime.now()).state("in_progress").todolistId(3).categoryId(2).taskCreator(30).updatedBy(authId).build();
+        when(taskRepository.findById(11)).thenReturn(java.util.Optional.of(task));
 
-        var resp = taskService.getTask(11L, authId);
+        var resp = taskService.getTask((int) 11L, authId);
 
         org.assertj.core.api.Assertions.assertThat(resp).isNotNull();
         org.assertj.core.api.Assertions.assertThat(resp.taskId()).isEqualTo(11L);
@@ -90,20 +90,20 @@ class TaskServiceTest {
 
     @Test
     void assignUserToTask_addsMembershipAndAudit() {
-        var taskId = 5L;
-        var userId = 40L;
+        var taskId = 5;
+        var userId = 40;
         var actorAuth = "actor-1";
 
-        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(taskId).name("T").todolistId(10L).build();
+        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(taskId).name("T").todolistId(10).build();
         when(taskRepository.findById(taskId)).thenReturn(java.util.Optional.of(task));
         var user = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(userId).authId("a").build();
         when(appUserRepository.findById(userId)).thenReturn(java.util.Optional.of(user));
 
-        var actor = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(100L).authId(actorAuth).build();
+        var actor = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(100).authId(actorAuth).build();
         when(appUserRepository.findByAuthId(actorAuth)).thenReturn(java.util.Optional.of(actor));
 
-        var membership = cz.uhk.pro2.tulipani.domain.entity.TodolistUser.builder().todolistId(10L).userId(100L).isListCreator(true).build();
-        when(todolistUserRepository.findByTodolistIdAndUserId(10L, 100L)).thenReturn(java.util.Optional.of(membership));
+        var membership = cz.uhk.pro2.tulipani.domain.entity.TodolistUser.builder().todolistId(10).userId(100).isListCreator(true).build();
+        when(todolistUserRepository.findByTodolistIdAndUserId(10, 100)).thenReturn(java.util.Optional.of(membership));
 
         when(taskUserRepository.existsByTaskIdAndUserId(taskId, userId)).thenReturn(false);
         when(taskUserRepository.save(any())).thenAnswer(i -> i.getArgument(0));
@@ -117,20 +117,20 @@ class TaskServiceTest {
 
     @Test
     void unassignUserFromTask_deletesMembershipAndAudit() {
-        var taskId = 6L;
-        var userId = 50L;
+        var taskId = 6;
+        var userId = 50;
         var actorAuth = "actor-2";
 
-        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(taskId).todolistId(20L).build();
+        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(taskId).todolistId(20).build();
         when(taskRepository.findById(taskId)).thenReturn(java.util.Optional.of(task));
 
         var actor = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(userId).authId(actorAuth).build();
         when(appUserRepository.findByAuthId(actorAuth)).thenReturn(java.util.Optional.of(actor));
 
-        var membership = cz.uhk.pro2.tulipani.domain.entity.TodolistUser.builder().todolistId(20L).userId(userId).isListCreator(false).build();
-        when(todolistUserRepository.findByTodolistIdAndUserId(20L, userId)).thenReturn(java.util.Optional.of(membership));
+        var membership = cz.uhk.pro2.tulipani.domain.entity.TodolistUser.builder().todolistId(20).userId(userId).isListCreator(false).build();
+        when(todolistUserRepository.findByTodolistIdAndUserId(20, userId)).thenReturn(java.util.Optional.of(membership));
 
-        var tu = cz.uhk.pro2.tulipani.domain.entity.TaskUser.builder().taskUsersId(99L).taskId(taskId).userId(userId).build();
+        var tu = cz.uhk.pro2.tulipani.domain.entity.TaskUser.builder().taskUsersId(99).taskId(taskId).userId(userId).build();
         when(taskUserRepository.findByTaskIdAndUserId(taskId, userId)).thenReturn(java.util.Optional.of(tu));
         when(auditLogRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
@@ -143,17 +143,17 @@ class TaskServiceTest {
     @Test
     void updateTaskStatus_allowsAuthorizedUser() {
         var authId = "auth-st";
-        var actor = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(60L).authId(authId).build();
+        var actor = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(60).authId(authId).build();
         when(appUserRepository.findByAuthId(authId)).thenReturn(java.util.Optional.of(actor));
 
-        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(70L).name("S").todolistId(30L).taskCreator(60L).state("todo").build();
-        when(taskRepository.findById(70L)).thenReturn(java.util.Optional.of(task));
+        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(70).name("S").todolistId(30).taskCreator(60).state("todo").build();
+        when(taskRepository.findById(70)).thenReturn(java.util.Optional.of(task));
 
         when(taskRepository.save(any())).thenAnswer(i -> i.getArgument(0));
         when(auditLogRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         var req = new cz.uhk.pro2.tulipani.web.dto.UpdateTaskStatusRequest("in_progress");
-        var resp = taskService.updateTaskStatus(70L, req, authId);
+        var resp = taskService.updateTaskStatus(70, req, authId);
 
         org.assertj.core.api.Assertions.assertThat(resp).isNotNull();
         org.assertj.core.api.Assertions.assertThat(resp.state()).isEqualTo("in_progress");
@@ -163,16 +163,16 @@ class TaskServiceTest {
     @Test
     void deleteTask_allowsAuthorizedUser() {
         var authId = "auth-del";
-        var actor = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(80L).authId(authId).build();
+        var actor = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(80).authId(authId).build();
         when(appUserRepository.findByAuthId(authId)).thenReturn(java.util.Optional.of(actor));
 
-        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(81L).todolistId(40L).taskCreator(80L).build();
-        when(taskRepository.findById(81L)).thenReturn(java.util.Optional.of(task));
+        var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(81).todolistId(40).taskCreator(80).build();
+        when(taskRepository.findById(81)).thenReturn(java.util.Optional.of(task));
 
-        when(taskUserRepository.findByTaskId(81L)).thenReturn(java.util.List.of());
+        when(taskUserRepository.findByTaskId(81)).thenReturn(java.util.List.of());
         when(auditLogRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        taskService.deleteTask(81L, authId);
+        taskService.deleteTask(81, authId);
 
         verify(taskRepository).delete(task);
         verify(auditLogRepository).save(any());

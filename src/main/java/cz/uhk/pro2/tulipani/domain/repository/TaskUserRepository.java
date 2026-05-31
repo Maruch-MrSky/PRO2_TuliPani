@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TaskUserRepository extends JpaRepository<TaskUser, Long> {
+public interface TaskUserRepository extends JpaRepository<TaskUser, Integer> {
 
-	boolean existsByTaskIdAndUserId(Long taskId, Long userId);
+	boolean existsByTaskIdAndUserId(Integer taskId, Integer userId);
 
-	Optional<TaskUser> findByTaskIdAndUserId(Long taskId, Long userId);
+	Optional<TaskUser> findByTaskIdAndUserId(Integer taskId, Integer userId);
 
-	List<TaskUser> findByTaskId(Long taskId);
+	List<TaskUser> findByTaskId(Integer taskId);
 }

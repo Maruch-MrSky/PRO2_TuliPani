@@ -44,14 +44,14 @@ class TodolistServiceTest {
     @Test
     void createTodolist_savesListAndMembership() {
         var authId = "auth-123";
-        var user = AppUser.builder().userId(10L).authId(authId).email("u@example.com").build();
+        var user = AppUser.builder().userId((int) 10L).authId(authId).email("u@example.com").build();
 
         when(appUserRepository.findByAuthId(authId)).thenReturn(Optional.of(user));
 
-        var savedList = Todolist.builder().todolistId(5L).name("My List").listType("personal").build();
+        var savedList = Todolist.builder().todolistId((int) 5L).name("My List").listType("personal").build();
         when(todolistRepository.save(any(Todolist.class))).thenReturn(savedList);
 
-        var role = GroupRole.builder().roleId(1L).roleName("spravce").build();
+        var role = GroupRole.builder().roleId((int) 1L).roleName("spravce").build();
         when(groupRoleRepository.findAll()).thenReturn(List.of(role));
 
         when(todolistUserRepository.save(any(TodolistUser.class))).thenAnswer(i -> i.getArgument(0));
@@ -70,12 +70,12 @@ class TodolistServiceTest {
     @Test
     void listTodolists_returnsUserLists() {
         var authId = "auth-123";
-        var user = AppUser.builder().userId(10L).authId(authId).email("u@example.com").build();
+        var user = AppUser.builder().userId((int) 10L).authId(authId).email("u@example.com").build();
         when(appUserRepository.findByAuthId(authId)).thenReturn(Optional.of(user));
 
-        var todolist = Todolist.builder().todolistId(2L).name("Team").listType("team").build();
-        var membership = TodolistUser.builder().todolistId(2L).userId(10L).todolist(todolist).build();
-        when(todolistUserRepository.findByUserId(10L)).thenReturn(List.of(membership));
+        var todolist = Todolist.builder().todolistId((int) 2L).name("Team").listType("team").build();
+        var membership = TodolistUser.builder().todolistId((int) 2L).userId((int) 10L).todolist(todolist).build();
+        when(todolistUserRepository.findByUserId((int) 10L)).thenReturn(List.of(membership));
 
         var result = todolistService.listTodolists(authId);
 
