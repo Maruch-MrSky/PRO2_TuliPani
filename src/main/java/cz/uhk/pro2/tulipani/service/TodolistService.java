@@ -6,7 +6,9 @@ import cz.uhk.pro2.tulipani.domain.repository.TodolistRepository;
 import cz.uhk.pro2.tulipani.domain.repository.TodolistUserRepository;
 import cz.uhk.pro2.tulipani.web.dto.CreateTodolistRequest;
 import cz.uhk.pro2.tulipani.web.dto.TodolistResponse;
+import cz.uhk.pro2.tulipani.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cz.uhk.pro2.tulipani.domain.repository.AuditLogRepository;
@@ -22,7 +24,7 @@ public class TodolistService {
     private final AuditLogRepository auditLogRepository;
 
     public TodolistResponse createTodolist(CreateTodolistRequest request, String authId) {
-        var user = appUserRepository.findByAuthId(authId)
+        var user = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
             .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
         var todolist = cz.uhk.pro2.tulipani.domain.entity.Todolist.builder()
@@ -96,8 +98,9 @@ public class TodolistService {
         auditLogRepository.save(audit);
     }
 
+    @Transactional(readOnly = true)
     public java.util.List<TodolistResponse> listTodolists(String authId) {
-        var user = appUserRepository.findByAuthId(authId)
+        var user = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
         var memberships = todolistUserRepository.findByUserId(user.getUserId());
@@ -116,7 +119,7 @@ public class TodolistService {
     }
 
     public TodolistResponse getTodolist(Integer id, String authId) {
-        var actor = appUserRepository.findByAuthId(authId)
+        var actor = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
             .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
         var membership = todolistUserRepository.findByTodolistIdAndUserId(id, actor.getUserId())
@@ -128,7 +131,7 @@ public class TodolistService {
     }
 
     public void deleteTodolist(Integer id, String authId) {
-        var actor = appUserRepository.findByAuthId(authId)
+        var actor = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
             .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
         var membership = todolistUserRepository.findByTodolistIdAndUserId(id, actor.getUserId())

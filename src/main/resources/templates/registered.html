@@ -1,0 +1,14 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <title>Registered</title>
+  <style>body { font-family: Arial, sans-serif; margin: 2rem; }</style>
+</head>
+<body>
+  <h1>Registration Complete</h1>
+  <p>Your account was created. Use this ID to login:</p>
+  <pre th:text="${authId}"></pre>
+  <p><a th:href="@{/ui/todolists(authId=${authId})}">Open your todolists</a></p>
+</body>
+</html>

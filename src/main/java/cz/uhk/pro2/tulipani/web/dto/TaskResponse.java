@@ -1,6 +1,7 @@
 package cz.uhk.pro2.tulipani.web.dto;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record TaskResponse(
         Integer taskId,

@@ -1,0 +1,14 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <title th:text="${todolist.name}">Todolist</title>
+  <style>body { font-family: Arial, sans-serif; margin: 2rem; }</style>
+</head>
+<body>
+  <h1 th:text="${todolist.name}">Todolist</h1>
+  <p th:text="${todolist.listType}">Type</p>
+
+  <a th:href="@{/ui/todolists}">Back</a>
+</body>
+</html>

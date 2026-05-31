@@ -1,6 +1,7 @@
 package cz.uhk.pro2.tulipani.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

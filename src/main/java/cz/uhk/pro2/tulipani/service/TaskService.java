@@ -5,11 +5,13 @@ import cz.uhk.pro2.tulipani.domain.repository.CategoryRepository;
 import cz.uhk.pro2.tulipani.domain.repository.TaskRepository;
 import cz.uhk.pro2.tulipani.domain.repository.TaskUserRepository;
 import cz.uhk.pro2.tulipani.domain.repository.TodolistRepository;
+import cz.uhk.pro2.tulipani.util.AuthUtils;
 import cz.uhk.pro2.tulipani.domain.repository.AuditLogRepository;
 import cz.uhk.pro2.tulipani.web.dto.CreateTaskRequest;
 import cz.uhk.pro2.tulipani.web.dto.TaskResponse;
 import cz.uhk.pro2.tulipani.web.dto.UpdateTaskStatusRequest;
 import lombok.RequiredArgsConstructor;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cz.uhk.pro2.tulipani.domain.repository.TodolistUserRepository;
@@ -27,7 +29,7 @@ public class TaskService {
     private final AuditLogRepository auditLogRepository;
 
     public TaskResponse createTask(CreateTaskRequest request, String authId) {
-        var user = appUserRepository.findByAuthId(authId)
+        var user = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
             .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
         var todolist = todolistRepository.findById(request.todolistId())
@@ -46,7 +48,7 @@ public class TaskService {
             .todolistId(request.todolistId())
             .categoryId(request.categoryId())
                 .taskCreator(user.getUserId())
-                .updatedBy(user.getAuthId())
+                .updatedBy(user.getAuthId() != null ? user.getAuthId().toString() : null)
             .build();
 
         task = taskRepository.save(task);
@@ -64,7 +66,7 @@ public class TaskService {
     }
 
         public TaskResponse getTask(Integer taskId, String authId) {
-        var user = appUserRepository.findByAuthId(authId)
+        var user = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
             .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
         var task = taskRepository.findById(taskId)
@@ -86,7 +88,7 @@ public class TaskService {
             var task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
 
-            var actor = appUserRepository.findByAuthId(actorAuthId)
+            var actor = appUserRepository.findByAuthId(AuthUtils.parseAuthId(actorAuthId))
                 .orElseThrow(() -> new IllegalArgumentException("Actor not found"));
 
             var todolistId = task.getTodolistId();
@@ -130,7 +132,7 @@ public class TaskService {
             var task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
 
-            var actor = appUserRepository.findByAuthId(actorAuthId)
+            var actor = appUserRepository.findByAuthId(AuthUtils.parseAuthId(actorAuthId))
                 .orElseThrow(() -> new IllegalArgumentException("Actor not found"));
 
             var todolistId = task.getTodolistId();
@@ -162,8 +164,8 @@ public class TaskService {
             }
 
     public TaskResponse updateTaskStatus(Integer taskId, UpdateTaskStatusRequest request, String authId) {
-        var actor = appUserRepository.findByAuthId(authId)
-                .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+        var actor = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
+            .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
         var task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
@@ -196,7 +198,7 @@ public class TaskService {
         }
 
         task.setState(status);
-        task.setUpdatedBy(actor.getAuthId());
+        task.setUpdatedBy(actor.getAuthId() != null ? actor.getAuthId().toString() : null);
 
         task = taskRepository.save(task);
 
@@ -213,7 +215,7 @@ public class TaskService {
     }
 
     public void deleteTask(Integer taskId, String authId) {
-        var actor = appUserRepository.findByAuthId(authId)
+            var actor = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
         var task = taskRepository.findById(taskId)

@@ -12,6 +12,7 @@ import cz.uhk.pro2.tulipani.web.dto.CreateTodolistRequest;
 import cz.uhk.pro2.tulipani.web.dto.TodolistResponse;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,7 +44,7 @@ class TodolistServiceTest {
 
     @Test
     void createTodolist_savesListAndMembership() {
-        var authId = "auth-123";
+        var authId = UUID.randomUUID();
         var user = AppUser.builder().userId((int) 10L).authId(authId).email("u@example.com").build();
 
         when(appUserRepository.findByAuthId(authId)).thenReturn(Optional.of(user));
@@ -57,10 +58,10 @@ class TodolistServiceTest {
         when(todolistUserRepository.save(any(TodolistUser.class))).thenAnswer(i -> i.getArgument(0));
 
         var req = new CreateTodolistRequest("My List", "personal");
-        TodolistResponse resp = todolistService.createTodolist(req, authId);
+        TodolistResponse resp = todolistService.createTodolist(req, authId.toString());
 
         assertThat(resp).isNotNull();
-        assertThat(resp.todolistId()).isEqualTo(5L);
+        assertThat(resp.todolistId()).isEqualTo(5);
         assertThat(resp.name()).isEqualTo("My List");
 
         verify(todolistRepository).save(any(Todolist.class));
@@ -69,7 +70,7 @@ class TodolistServiceTest {
 
     @Test
     void listTodolists_returnsUserLists() {
-        var authId = "auth-123";
+        var authId = UUID.randomUUID();
         var user = AppUser.builder().userId((int) 10L).authId(authId).email("u@example.com").build();
         when(appUserRepository.findByAuthId(authId)).thenReturn(Optional.of(user));
 
@@ -77,10 +78,10 @@ class TodolistServiceTest {
         var membership = TodolistUser.builder().todolistId((int) 2L).userId((int) 10L).todolist(todolist).build();
         when(todolistUserRepository.findByUserId((int) 10L)).thenReturn(List.of(membership));
 
-        var result = todolistService.listTodolists(authId);
+        var result = todolistService.listTodolists(authId.toString());
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).todolistId()).isEqualTo(2L);
+        assertThat(result.get(0).todolistId()).isEqualTo(2);
         assertThat(result.get(0).name()).isEqualTo("Team");
     }
 }

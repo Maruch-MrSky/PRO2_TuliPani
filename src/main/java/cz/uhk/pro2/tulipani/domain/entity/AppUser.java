@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -39,7 +40,7 @@ public class AppUser {
     private String surname;
 
     @Column(name = "auth_id")
-    private String authId;
+    private UUID authId;
 
     @Column(name = "app_role_id")
     private Integer appRoleId;
