@@ -1,5 +1,8 @@
 {
     "files.readonlyInclude": {
         "{**/.c4z/.extsrcs/*.PROTSYM.cbl,**/.c4z/.extsrcs/*.PROTSYM.listing}": true
-    }
+    },
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.home": "C:\\Users\\mrsko\\.jdks\\ms-21.0.10",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

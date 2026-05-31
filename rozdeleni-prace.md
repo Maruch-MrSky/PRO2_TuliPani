@@ -25,19 +25,19 @@ Cíl: mít jasné, navazující a spravedlivě rozdělené úkoly pro 3 studenty
 - [x] připravit branch strategii, Definition of Done, code style
 
 2) Dny 1–3 — DB & doména
-- [ ] Student 2: entity + vztahy + repository návrh
+- [x] Student 2: entity + vztahy + repository návrh
 - [ ] Student 3: připojení DB, migrace, seed skripty
 - [x] Student 1: návrh API kontraktů (request/response), validace, error model
 
 3) Dny 3–6 — První backend vertikála
-- [ ] Student 2: service metody pro todolists + tasks
+- [~] Student 2: service metody pro todolists + tasks (část implementována)
 - [x] Student 1: controllery pro todolists + tasks (bez business logiky)
 - [ ] Student 3: integrační test prostředí, fixtures, smoke testy
 
 4) Dny 6–8 — Autentizace a role
-- [ ] Student 2: bezpečnostní logika v service (role pravidla)
-- [ ] Student 3: JWT integrace, filtry, env konfigurace
-- [ ] Student 1: auth endpointy, chybové scénáře, API dokumentace auth flow
+ - [ ] Student 2: bezpečnostní logika v service (role pravidla)
+ - [ ] Student 3: JWT integrace, filtry, env konfigurace
+ - [~] Student 1: auth endpointy, chybové scénáře, API dokumentace auth flow (controller + error handling implemented; service/JWT still TODO)
 
 5) Dny 8–10 — Stabilizace
 - [ ] Student 1: controller testy, API dokumentace, Postman kolekce
@@ -53,7 +53,7 @@ Cíl: mít jasné, navazující a spravedlivě rozdělené úkoly pro 3 studenty
 
 - [x] Dny 0–1: Kick-off
 - [x] Dny 1–3: DB & doména (návrhy)
-- [ ] Dny 3–6: první backend vertikála
+- [~] Dny 3–6: první backend vertikála
 - [ ] Dny 6–8: autentizace a role
 - [ ] Dny 8–10: stabilizace
 - [ ] Dny 10–14: frontend
@@ -66,9 +66,9 @@ HTTP vrstva, DTO kontrakty, validace vstupů, jednotné zpracování chyb, contr
 ### TODO (Student 1)
 - [ ] Implementovat všechny endpointy podle `project-spec.md`
 - [x] Vytvořit DTO request/response (část implementována)
-- [ ] Přidat Bean Validation (`@NotBlank`, `@Email`, `@Size`)
+- [x] Přidat Bean Validation (`@NotBlank`, `@Email`, `@Size`)
 - [x] Zavést globální `@ControllerAdvice` pro jednotné chyby
-- [ ] Připravit OpenAPI / Postman kolekci
+- [x] Připravit OpenAPI / Postman kolekci
 - [x] Napsat základní controller testy (MockMvc)
 
 ### Deliverables
@@ -83,22 +83,15 @@ HTTP vrstva, DTO kontrakty, validace vstupů, jednotné zpracování chyb, contr
 Doménové mapování (JPA), repository vrstva, service logika, role pravidla, transakce a audit.
 
 ### TODO (Student 2)
-- [ ] Namapovat JPA entity a relace ze `supabase_schema.sql`
-- [ ] Připravit repository dotazy pro hlavní use-cases
-- [ ] Implementovat service metody (např. `createTodolist`, `addUserToTodolist`)
-- [ ] Zapracovat business validace a transakce
-- [ ] Zajistit zápis do `audit_log`
-- [ ] Napsat unit testy pro service
-
-### Stav implementace (aktuálně - Student 2)
 - [x] Namapovat JPA entity a relace (entities present in `src/main/java/.../domain/entity`)
 - [x] Připravit repository dotazy pro hlavní use-cases (additional helpers added)
 - [x] Implementovat základní service metody:
 	- [x] `createTodolist`, `listTodolists`
 	- [x] `createTask`, `getTask`
 	- [x] `assignUserToTask`, `unassignUserFromTask` (task-level assignment)
-	- [ ] `addUserToTodolist`, `removeUserFromTodolist` (todolist-level membership — in progress)
-	- [ ] `updateTaskStatus`, `deleteTask` (pending)
+	- [x] `addUserToTodolist`, `removeUserFromTodolist` (todolist-level membership)
+	- [x] `updateTaskStatus`, `deleteTask` (implemented)
+- [ ] Zapracovat business validace a transakce
 - [x] Zajistit zápis do `audit_log` pro vytvoření úkolu a přiřazení/odebrání uživatele
 - [~] Jednotkové testy: `TodolistService` tests present; `TaskService` tests added for create/get/assign/unassign; more tests pending for status/delete
 
