@@ -1,19 +1,9 @@
 spring:
   config:
     import: optional:file:.env[.properties]
-  datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/tulipani}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: none
-    open-in-view: false
-    properties:
-      hibernate:
-        default_schema: public
-        format_sql: true
+    # Datasource/JPA settings were moved to the legacy `supabase` profile and
+    # removed from the default configuration. Use the `supabase-api` profile
+    # to run the application without a direct JDBC/Postgres connection.
   jackson:
     time-zone: UTC
 

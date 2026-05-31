@@ -95,7 +95,7 @@ Aligned entities to `supabase_schema.sql` (types, nullability, field names):
 5. Run integration tests against a real DB and fix any mapping/constraint issues.
 
 ## Notes
-- Builds and runtime require a database; `application.yml` defaults to `jdbc:postgresql://localhost:5432/tulipani`.
+- The project now supports a REST-only mode (`supabase-api`) that does not require a direct JDBC/Postgres connection. The default `application.yml` no longer contains a JDBC datasource.
 - Many changes were conservative (relax nullability) to avoid breaking existing behavior; consider tightening constraints after DB testing.
 
 ---

@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run Spring Boot (Supabase)",
+      "label": "Run Spring Boot (Supabase API)",
       "type": "shell",
       "command": ".\\mvnw.cmd",
       "args": [
@@ -10,7 +10,7 @@
       ],
       "options": {
         "env": {
-          "SPRING_PROFILES_ACTIVE": "supabase"
+          "SPRING_PROFILES_ACTIVE": "supabase-api"
         }
       },
       "problemMatcher": []

@@ -3,10 +3,10 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Spring Boot (Supabase)",
+      "name": "Spring Boot (Supabase API)",
       "request": "launch",
       "mainClass": "cz.uhk.pro2.tulipani.TuliPaniApplication",
-      "args": "--spring.profiles.active=supabase"
+      "args": "--spring.profiles.active=supabase-api"
     }
   ]
 }
