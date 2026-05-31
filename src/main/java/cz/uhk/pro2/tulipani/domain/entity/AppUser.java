@@ -42,7 +42,7 @@ public class AppUser {
     private String authId;
 
     @Column(name = "app_role_id")
-    private Long appRoleId;
+    private Integer appRoleId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_role_id", insertable = false, updatable = false)
