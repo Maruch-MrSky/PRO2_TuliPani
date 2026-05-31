@@ -171,6 +171,19 @@ public class UiTodolistController {
         return redirectToDashboard(authId, selectedTodolistId, categoryId, selectedState, search);
     }
 
+    @PostMapping("/{id}/delete")
+    public String deleteTodolist(@RequestParam(value = "authId", required = false) String authId,
+                                 @org.springframework.web.bind.annotation.PathVariable Integer id,
+                                 @RequestParam(value = "selectedTodolistId", required = false) Integer selectedTodolistId,
+                                 @RequestParam(value = "categoryId", required = false) Integer categoryId,
+                                 @RequestParam(value = "state", required = false) String state,
+                                 @RequestParam(value = "search", required = false) String search) {
+        todolistService.deleteTodolist(id, authId);
+        // redirect to dashboard without the deleted todolist selected
+        Integer redirectTodolist = (selectedTodolistId != null && selectedTodolistId.equals(id)) ? null : selectedTodolistId;
+        return redirectToDashboard(authId, redirectTodolist, categoryId, state, search);
+    }
+
     private String redirectToDashboard(String authId,
                                        Integer selectedTodolistId,
                                        Integer categoryId,

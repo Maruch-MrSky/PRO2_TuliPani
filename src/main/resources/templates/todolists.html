@@ -168,7 +168,7 @@
       <div class="section-title">
         <div>
           <h1 style="margin: 0;">Welcome, <span th:text="${currentUserName}">User</span></h1>
-          <p class="muted" style="margin: 0.25rem 0 0;">Private and public groups</p>
+          <p class="muted" style="margin: 0.25rem 0 0;">Groups</p>
         </div>
       </div>
       <p class="muted">Signed in with:</p>
@@ -177,27 +177,20 @@
     </div>
 
     <div class="card">
-      <h2 style="margin-top: 0;">Private groups</h2>
-      <div class="group-list" th:if="${privateLists != null and !#lists.isEmpty(privateLists)}">
-        <a class="group-link"
-           th:classappend="${selectedTodolistId == list.todolistId} ? ' active'"
-           th:each="list : ${privateLists}"
-           th:href="@{/ui/todolists(authId=${authId}, selectedTodolistId=${list.todolistId}, categoryId=${selectedCategoryId}, state=${selectedState}, search=${search})}"
-           th:text="${list.name}">Private list</a>
+      <h2 style="margin-top: 0;">Groups</h2>
+      <div class="group-list" th:if="${lists != null and !#lists.isEmpty(lists)}">
+        <div th:each="list : ${lists}" style="display:flex; gap:0.5rem; align-items:center;">
+          <a class="group-link"
+             th:classappend="${selectedTodolistId == list.todolistId} ? ' active'"
+             th:href="@{/ui/todolists(authId=${authId}, selectedTodolistId=${list.todolistId}, categoryId=${selectedCategoryId}, state=${selectedState}, search=${search})}"
+             th:text="${list.name}">Group</a>
+          <form th:action="@{/ui/todolists/{id}/delete(id=${list.todolistId})}" method="post" onsubmit="return confirm('Delete this group and all its tasks?');" >
+            <input type="hidden" name="authId" th:value="${authId}" />
+            <button type="submit" style="background-color: #b42318;";style="background: transparent; border: 1px solid var(--line); padding: 0.4rem 0.6rem; border-radius: 8px;">Delete</button>
+          </form>
+        </div>
       </div>
-      <div class="empty" th:if="${privateLists == null or #lists.isEmpty(privateLists)}">No private groups yet.</div>
-    </div>
-
-    <div class="card">
-      <h2 style="margin-top: 0;">Public groups</h2>
-      <div class="group-list" th:if="${publicLists != null and !#lists.isEmpty(publicLists)}">
-        <a class="group-link"
-           th:classappend="${selectedTodolistId == list.todolistId} ? ' active'"
-           th:each="list : ${publicLists}"
-           th:href="@{/ui/todolists(authId=${authId}, selectedTodolistId=${list.todolistId}, categoryId=${selectedCategoryId}, state=${selectedState}, search=${search})}"
-           th:text="${list.name}">Public list</a>
-      </div>
-      <div class="empty" th:if="${publicLists == null or #lists.isEmpty(publicLists)}">No public groups yet.</div>
+      <div class="empty" th:if="${lists == null or #lists.isEmpty(lists)}">No groups yet.</div>
     </div>
 
     <div class="card">
@@ -208,13 +201,7 @@
           Name
           <input type="text" name="name" placeholder="e.g. Team Sprint" required />
         </label>
-        <label>
-          Visibility
-          <select name="listType">
-            <option value="private">Private</option>
-            <option value="public">Public</option>
-          </select>
-        </label>
+        <input type="hidden" name="listType" value="private" />
         <button type="submit">Create group</button>
       </form>
     </div>
