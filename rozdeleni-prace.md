@@ -31,7 +31,7 @@ Cíl: mít jasné, navazující a spravedlivě rozdělené úkoly pro 3 studenty
 
 3) Dny 3–6 — První backend vertikála
 - [ ] Student 2: service metody pro todolists + tasks
-- [ ] Student 1: controllery pro todolists + tasks (bez business logiky)
+- [x] Student 1: controllery pro todolists + tasks (bez business logiky)
 - [ ] Student 3: integrační test prostředí, fixtures, smoke testy
 
 4) Dny 6–8 — Autentizace a role
