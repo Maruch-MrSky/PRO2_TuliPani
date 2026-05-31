@@ -152,4 +152,29 @@ public class TodolistService {
 
         auditLogRepository.save(audit);
     }
+
+    // new helper: get members of todolist
+    public java.util.List<cz.uhk.pro2.tulipani.domain.entity.TodolistUser> getTodolistMembers(Long todolistId) {
+        return todolistUserRepository.findAll().stream()
+                .filter(tu -> todolistId.equals(tu.getTodolistId()))
+                .toList();
+    }
+
+    // new helper: change role
+    @Transactional
+    public void changeUserRoleInTodolist(Long todolistId, Long userId, Long newRoleId) {
+        var tu = todolistUserRepository.findByTodolistIdAndUserId(todolistId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Todolist membership not found"));
+        tu.setRoleId(newRoleId);
+        todolistUserRepository.save(tu);
+
+        var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
+            .action("change_user_role_in_todolist")
+            .logTime(java.time.LocalDateTime.now())
+            .userId(userId)
+            .taskId(null)
+            .build();
+
+        auditLogRepository.save(audit);
+    }
 }
