@@ -42,22 +42,22 @@ class TodolistUsersControllerTest {
     @Test
     void listMembers_returnsOk() throws Exception {
         var tu = new cz.uhk.pro2.tulipani.domain.entity.TodolistUser();
-        tu.setTodolistUsersId(1L);
-        tu.setUserId(11L);
-        tu.setRoleId(2L);
+        tu.setTodolistUsersId((int) 1L);
+        tu.setUserId((int) 11L);
+        tu.setRoleId((int) 2L);
         tu.setIsListCreator(false);
 
-        when(todolistService.getTodolistMembers(5L)).thenReturn(List.of(tu));
+        when(todolistService.getTodolistMembers((int) 5L)).thenReturn(List.of(tu));
 
         mockMvc.perform(get("/api/todolists/5/users"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].userId").value(11));
+                .andExpect(jsonPath("$[0].userId").value((int) 11L));
     }
 
     @Test
     void addUser_returnsCreated() throws Exception {
-        AddUserToTodolistRequest req = new AddUserToTodolistRequest(12L, 3L);
-        doNothing().when(todolistService).addUserToTodolist(5L, 12L, 3L);
+        AddUserToTodolistRequest req = new AddUserToTodolistRequest((int) 12L, (int) 3L);
+        doNothing().when(todolistService).addUserToTodolist((int) 5L, (int) 12L, (int) 3L);
 
         mockMvc.perform(post("/api/todolists/5/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,8 +67,8 @@ class TodolistUsersControllerTest {
 
     @Test
     void updateUserRole_returnsOk() throws Exception {
-        AddUserToTodolistRequest req = new AddUserToTodolistRequest(12L, 4L);
-        doNothing().when(todolistService).changeUserRoleInTodolist(5L, 12L, 4L);
+        AddUserToTodolistRequest req = new AddUserToTodolistRequest((int) 12L, (int) 4L);
+        doNothing().when(todolistService).changeUserRoleInTodolist((int) 5L, (int) 12L, (int) 4L);
 
         mockMvc.perform(put("/api/todolists/5/users/12")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -78,7 +78,7 @@ class TodolistUsersControllerTest {
 
     @Test
     void removeUser_returnsNoContent() throws Exception {
-        doNothing().when(todolistService).removeUserFromTodolist(5L, 12L);
+        doNothing().when(todolistService).removeUserFromTodolist((int) 5L, (int) 12L);
 
         mockMvc.perform(delete("/api/todolists/5/users/12"))
                 .andExpect(status().isNoContent());

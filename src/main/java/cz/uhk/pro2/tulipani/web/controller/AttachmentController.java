@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class AttachmentController {
 
     @PostMapping
-    public ResponseEntity<Void> addAttachment(@PathVariable Long taskId, @RequestBody CreateAttachmentRequest req,
+    public ResponseEntity<Void> addAttachment(@PathVariable Integer taskId, @RequestBody CreateAttachmentRequest req,
                                               @RequestHeader(value = "X-Auth-Id", required = false) String authId) {
         throw new UnsupportedOperationException("Not implemented");
     }

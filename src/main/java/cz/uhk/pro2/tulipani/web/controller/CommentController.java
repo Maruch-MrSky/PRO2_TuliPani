@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
     @PostMapping
-    public ResponseEntity<Void> addComment(@PathVariable Long taskId, @RequestBody CreateCommentRequest req,
+    public ResponseEntity<Void> addComment(@PathVariable Integer taskId, @RequestBody CreateCommentRequest req,
                                            @RequestHeader(value = "X-Auth-Id", required = false) String authId) {
         throw new UnsupportedOperationException("Not implemented");
     }

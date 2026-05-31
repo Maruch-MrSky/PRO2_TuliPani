@@ -154,7 +154,7 @@ public class TodolistService {
     }
 
     // new helper: get members of todolist
-    public java.util.List<cz.uhk.pro2.tulipani.domain.entity.TodolistUser> getTodolistMembers(Long todolistId) {
+    public java.util.List<cz.uhk.pro2.tulipani.domain.entity.TodolistUser> getTodolistMembers(Integer todolistId) {
         return todolistUserRepository.findAll().stream()
                 .filter(tu -> todolistId.equals(tu.getTodolistId()))
                 .toList();
@@ -162,7 +162,7 @@ public class TodolistService {
 
     // new helper: change role
     @Transactional
-    public void changeUserRoleInTodolist(Long todolistId, Long userId, Long newRoleId) {
+    public void changeUserRoleInTodolist(int todolistId, int userId, int newRoleId) {
         var tu = todolistUserRepository.findByTodolistIdAndUserId(todolistId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Todolist membership not found"));
         tu.setRoleId(newRoleId);

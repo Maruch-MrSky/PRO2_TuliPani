@@ -21,21 +21,21 @@ public class TaskUsersController {
     private final TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<List<Long>> listAssignedUsers(@PathVariable Long taskId) {
+    public ResponseEntity<List<Integer>> listAssignedUsers(@PathVariable Integer taskId) {
         var users = taskService.listUsersForTask(taskId);
         var ids = users.stream().map(TaskUser::getUserId).collect(Collectors.toList());
         return ResponseEntity.ok(ids);
     }
 
     @PostMapping
-    public ResponseEntity<Void> assignUser(@PathVariable Long taskId, @RequestHeader(value = "X-Auth-Id", required = false) String authId,
+    public ResponseEntity<Void> assignUser(@PathVariable Integer taskId, @RequestHeader(value = "X-Auth-Id", required = false) String authId,
                                            @RequestBody AssignUserToTaskRequest req) {
         taskService.assignUserToTask(authId, taskId, req.userId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> unassignUser(@PathVariable Long taskId, @PathVariable Long userId,
+    public ResponseEntity<Void> unassignUser(@PathVariable Integer taskId, @PathVariable Integer userId,
                                              @RequestHeader(value = "X-Auth-Id", required = false) String authId) {
         taskService.unassignUserFromTask(authId, taskId, userId);
         return ResponseEntity.noContent().build();

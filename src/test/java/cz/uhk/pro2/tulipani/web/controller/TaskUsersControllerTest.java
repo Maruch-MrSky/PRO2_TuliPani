@@ -33,8 +33,8 @@ public class TaskUsersControllerTest {
 
     @Test
     void assignUser_shouldReturnCreated() throws Exception {
-        AssignUserToTaskRequest req = new AssignUserToTaskRequest(10L);
-        doNothing().when(taskService).assignUserToTask("auth-1", 1L, 10L);
+        AssignUserToTaskRequest req = new AssignUserToTaskRequest((int) 10L);
+        doNothing().when(taskService).assignUserToTask("auth-1", (int) 1L, (int) 10L);
 
         mockMvc.perform(post("/api/tasks/1/users")
                 .header("X-Auth-Id", "auth-1")
@@ -45,7 +45,7 @@ public class TaskUsersControllerTest {
 
     @Test
     void unassignUser_shouldReturnNoContent() throws Exception {
-        doNothing().when(taskService).unassignUserFromTask("auth-1", 1L, 10L);
+        doNothing().when(taskService).unassignUserFromTask("auth-1", (int) 1L, (int) 10L);
 
         mockMvc.perform(delete("/api/tasks/1/users/10")
                 .header("X-Auth-Id", "auth-1"))
@@ -55,12 +55,12 @@ public class TaskUsersControllerTest {
     @Test
     void listAssignedUsers_shouldReturnOk() throws Exception {
         var tu = new cz.uhk.pro2.tulipani.domain.entity.TaskUser();
-        tu.setTaskUsersId(5L);
-        tu.setUserId(10L);
-        when(taskService.listUsersForTask(1L)).thenReturn(List.of(tu));
+        tu.setTaskUsersId((int) 5L);
+        tu.setUserId((int) 10L);
+        when(taskService.listUsersForTask((int) 1L)).thenReturn(List.of(tu));
 
         mockMvc.perform(get("/api/tasks/1/users"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0]").value(10));
+            .andExpect(jsonPath("$[0]").value((int) 10L));
     }
 }

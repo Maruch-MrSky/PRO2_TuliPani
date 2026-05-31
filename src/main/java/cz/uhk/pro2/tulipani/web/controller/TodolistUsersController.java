@@ -21,26 +21,26 @@ public class TodolistUsersController {
     private final TodolistService todolistService;
 
     @GetMapping
-    public ResponseEntity<List<TodolistUserResponse>> listUsers(@PathVariable Long todolistId) {
+    public ResponseEntity<List<TodolistUserResponse>> listUsers(@PathVariable int todolistId) {
         var users = todolistService.getTodolistMembers(todolistId);
         var resp = users.stream().map(u -> new TodolistUserResponse(u.getUserId(), u.getRoleId(), u.getIsListCreator())).collect(Collectors.toList());
         return ResponseEntity.ok(resp);
     }
 
     @PostMapping
-    public ResponseEntity<Void> addUser(@PathVariable Long todolistId, @RequestBody AddUserToTodolistRequest req) {
+    public ResponseEntity<Void> addUser(@PathVariable int todolistId, @RequestBody AddUserToTodolistRequest req) {
         todolistService.addUserToTodolist(todolistId, req.userId(), req.roleId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<Void> updateUserRole(@PathVariable Long todolistId, @PathVariable Long userId, @RequestBody AddUserToTodolistRequest req) {
+    public ResponseEntity<Void> updateUserRole(@PathVariable int todolistId, @PathVariable int userId, @RequestBody AddUserToTodolistRequest req) {
         todolistService.changeUserRoleInTodolist(todolistId, userId, req.roleId());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> removeUser(@PathVariable Long todolistId, @PathVariable Long userId) {
+    public ResponseEntity<Void> removeUser(@PathVariable int todolistId, @PathVariable int userId) {
         todolistService.removeUserFromTodolist(todolistId, userId);
         return ResponseEntity.noContent().build();
     }

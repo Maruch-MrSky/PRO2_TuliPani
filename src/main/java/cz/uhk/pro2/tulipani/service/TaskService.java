@@ -259,7 +259,7 @@ public class TaskService {
     }
 
     // new helper to list task users
-    public java.util.List<cz.uhk.pro2.tulipani.domain.entity.TaskUser> listUsersForTask(Long taskId) {
+    public java.util.List<cz.uhk.pro2.tulipani.domain.entity.TaskUser> listUsersForTask(int taskId) {
         return taskUserRepository.findByTaskId(taskId);
     }
 }
