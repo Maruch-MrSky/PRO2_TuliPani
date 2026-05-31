@@ -46,17 +46,22 @@ public class AuthService {
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public AuthResponse login(AuthLoginRequest request) {
         if (request == null) throw new IllegalArgumentException("Missing request");
-        var user = appUserRepository.findByEmail(request.email())
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        try {
+            var user = appUserRepository.findByEmail(request.email())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (user.getAuthId() == null) {
-            user.setAuthId(java.util.UUID.randomUUID());
-            user = appUserRepository.save(user);
+            if (user.getAuthId() == null) {
+                user.setAuthId(java.util.UUID.randomUUID());
+                user = appUserRepository.save(user);
+            }
+
+            // NOTE: password is not validated - external auth expected. Return authId as token.
+            return new AuthResponse(user.getAuthId() != null ? user.getAuthId().toString() : null, user.getUserId(), user.getEmail(), null);
+        } catch (DataAccessException dae) {
+            throw new IllegalStateException("Database error during login: " + dae.getMessage(), dae);
         }
-
-        // NOTE: password is not validated - external auth expected. Return authId as token.
-        return new AuthResponse(user.getAuthId() != null ? user.getAuthId().toString() : null, user.getUserId(), user.getEmail(), null);
     }
 }

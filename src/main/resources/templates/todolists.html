@@ -78,6 +78,54 @@
       color: var(--accent);
     }
     .pill.alt { background: rgba(217, 119, 6, 0.12); color: var(--accent-2); }
+    .category-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: white;
+      font-weight: 600;
+    }
+    .category-dot {
+      width: 0.65rem;
+      height: 0.65rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+      flex: 0 0 auto;
+    }
+    .swatch-list {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+    .swatch {
+      position: relative;
+      display: block;
+      padding: 0;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      min-height: 42px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+    .swatch input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .swatch span {
+      display: block;
+      padding: 0.6rem 0.5rem;
+      color: white;
+      font-size: 0.78rem;
+      text-align: center;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.35);
+    }
+    .swatch input:checked + span {
+      outline: 3px solid var(--text);
+      outline-offset: -3px;
+    }
     .filters, .forms { display: grid; gap: 0.75rem; }
     .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
     label { display: grid; gap: 0.35rem; font-weight: 700; font-size: 0.95rem; }
@@ -184,8 +232,24 @@
           <input type="text" name="name" placeholder="e.g. Backend" required />
         </label>
         <label>
-          Color hex
-          <input type="text" name="colorHex" placeholder="#1f6f78" />
+          Color
+          <div class="swatch-list">
+            <label class="swatch" style="background:#1f6f78;">
+              <input type="radio" name="colorHex" value="#1f6f78" checked />
+            </label>
+            <label class="swatch" style="background:#d97706;">
+              <input type="radio" name="colorHex" value="#d97706" />
+            </label>
+            <label class="swatch" style="background:#2563eb;">
+              <input type="radio" name="colorHex" value="#2563eb" />
+            </label>
+            <label class="swatch" style="background:#16a34a;">
+              <input type="radio" name="colorHex" value="#16a34a" />
+            </label>
+            <label class="swatch" style="background:#be185d;">
+              <input type="radio" name="colorHex" value="#be185d" />
+            </label>
+          </div>
         </label>
         <button type="submit">Create category</button>
       </form>
@@ -251,8 +315,11 @@
           </div>
           <p class="muted" th:text="${task.description != null ? task.description : 'No description'}">Description</p>
           <div class="row">
-            <span class="pill" th:if="${task.categoryId != null and categoriesById[task.categoryId] != null}"
-                  th:text="${categoriesById[task.categoryId].name}">Category</span>
+            <span class="pill category-pill" th:if="${task.categoryId != null and categoriesById[task.categoryId] != null}"
+                  th:style="'background:' + ${categoriesById[task.categoryId].colorHex} + ';'">
+              <span class="category-dot"></span>
+              <span th:text="${categoriesById[task.categoryId].name}">Category</span>
+            </span>
             <span class="pill alt" th:if="${task.deadline != null}" th:text="${task.deadline}">Deadline</span>
           </div>
           <form class="row" th:action="@{/ui/todolists/{taskId}/state(taskId=${task.taskId})}" method="post">
@@ -260,12 +327,21 @@
             <input type="hidden" name="selectedTodolistId" th:value="${selectedTodolistId}" />
             <input type="hidden" name="categoryId" th:value="${selectedCategoryId}" />
             <input type="hidden" name="search" th:value="${search}" />
-            <select name="state">
+            <input type="hidden" name="selectedState" th:value="${selectedState}" />
+            <select name="newState">
               <option value="todo" th:selected="${task.state == 'todo'}">Todo</option>
               <option value="in_progress" th:selected="${task.state == 'in_progress'}">In progress</option>
               <option value="done" th:selected="${task.state == 'done'}">Done</option>
             </select>
             <button type="submit">Change state</button>
+          </form>
+          <form class="row" th:action="@{/ui/todolists/{taskId}/delete(taskId=${task.taskId})}" method="post" onsubmit="return confirm('Delete this task?');">
+            <input type="hidden" name="authId" th:value="${authId}" />
+            <input type="hidden" name="selectedTodolistId" th:value="${selectedTodolistId}" />
+            <input type="hidden" name="categoryId" th:value="${selectedCategoryId}" />
+            <input type="hidden" name="search" th:value="${search}" />
+            <input type="hidden" name="selectedState" th:value="${selectedState}" />
+            <button type="submit" style="background: var(--danger);">Delete task</button>
           </form>
         </article>
       </div>

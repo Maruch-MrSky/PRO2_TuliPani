@@ -151,12 +151,24 @@ public class UiTodolistController {
     @PostMapping("/{taskId}/state")
     public String changeTaskState(@RequestParam(value = "authId", required = false) String authId,
                                   @org.springframework.web.bind.annotation.PathVariable Integer taskId,
-                                  @RequestParam("state") String state,
+                                  @RequestParam("newState") String newState,
+                                  @RequestParam(value = "selectedState", required = false) String selectedState,
                                   @RequestParam(value = "selectedTodolistId", required = false) Integer selectedTodolistId,
                                   @RequestParam(value = "categoryId", required = false) Integer categoryId,
                                   @RequestParam(value = "search", required = false) String search) {
-        taskService.updateTaskStatus(taskId, new UpdateTaskStatusRequest(state), authId);
-        return redirectToDashboard(authId, selectedTodolistId, categoryId, state, search);
+        taskService.updateTaskStatus(taskId, new UpdateTaskStatusRequest(newState), authId);
+        return redirectToDashboard(authId, selectedTodolistId, categoryId, selectedState, search);
+    }
+
+    @PostMapping("/{taskId}/delete")
+    public String deleteTask(@RequestParam(value = "authId", required = false) String authId,
+                             @org.springframework.web.bind.annotation.PathVariable Integer taskId,
+                             @RequestParam(value = "selectedState", required = false) String selectedState,
+                             @RequestParam(value = "selectedTodolistId", required = false) Integer selectedTodolistId,
+                             @RequestParam(value = "categoryId", required = false) Integer categoryId,
+                             @RequestParam(value = "search", required = false) String search) {
+        taskService.deleteTask(taskId, authId);
+        return redirectToDashboard(authId, selectedTodolistId, categoryId, selectedState, search);
     }
 
     private String redirectToDashboard(String authId,
