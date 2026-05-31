@@ -2,6 +2,7 @@ package cz.uhk.pro2.tulipani.service;
 
 import cz.uhk.pro2.tulipani.domain.repository.AppUserRepository;
 import cz.uhk.pro2.tulipani.domain.repository.CategoryRepository;
+import cz.uhk.pro2.tulipani.domain.repository.GroupRoleRepository;
 import cz.uhk.pro2.tulipani.domain.repository.TaskRepository;
 import cz.uhk.pro2.tulipani.domain.repository.TaskUserRepository;
 import cz.uhk.pro2.tulipani.domain.repository.TodolistRepository;
@@ -41,6 +42,9 @@ class TaskServiceTest {
     private CategoryRepository categoryRepository;
 
     @Mock
+    private GroupRoleRepository groupRoleRepository;
+
+    @Mock
     private AuditLogRepository auditLogRepository;
 
     @InjectMocks
@@ -70,6 +74,42 @@ class TaskServiceTest {
 
         verify(taskRepository).save(any(cz.uhk.pro2.tulipani.domain.entity.Task.class));
         verify(auditLogRepository).save(any());
+    }
+
+    @Test
+    void listTasksForTodolist_filtersByCategoryAndSearch() {
+        var authId = UUID.randomUUID();
+        var actor = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder().userId(21).authId(authId).email("viewer@example.com").build();
+        when(appUserRepository.findByAuthId(authId)).thenReturn(java.util.Optional.of(actor));
+
+        var membership = cz.uhk.pro2.tulipani.domain.entity.TodolistUser.builder().todolistId(9).userId(21).isListCreator(true).build();
+        when(todolistUserRepository.findByTodolistIdAndUserId(9, 21)).thenReturn(java.util.Optional.of(membership));
+
+        var matching = cz.uhk.pro2.tulipani.domain.entity.Task.builder()
+            .taskId(1)
+            .name("Write dashboard")
+            .description("Create dashboard cards")
+            .todolistId(9)
+            .categoryId(4)
+            .state("todo")
+            .updatedBy(authId.toString())
+            .build();
+        var other = cz.uhk.pro2.tulipani.domain.entity.Task.builder()
+            .taskId(2)
+            .name("Ignore me")
+            .description("Different category")
+            .todolistId(9)
+            .categoryId(7)
+            .state("done")
+            .updatedBy(authId.toString())
+            .build();
+
+        when(taskRepository.findByTodolistId(9)).thenReturn(java.util.List.of(matching, other));
+
+        var tasks = taskService.listTasksForTodolist(9, authId.toString(), 4, "todo", "dashboard");
+
+        org.assertj.core.api.Assertions.assertThat(tasks).hasSize(1);
+        org.assertj.core.api.Assertions.assertThat(tasks.getFirst().taskId()).isEqualTo(1);
     }
 
     @Test
@@ -150,6 +190,11 @@ class TaskServiceTest {
         var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(70).name("S").todolistId(30).taskCreator(60).state("todo").build();
         when(taskRepository.findById(70)).thenReturn(java.util.Optional.of(task));
 
+        var membership = cz.uhk.pro2.tulipani.domain.entity.TodolistUser.builder().todolistId(30).userId(60).isListCreator(true).build();
+        when(todolistUserRepository.findByTodolistIdAndUserId(30, 60)).thenReturn(java.util.Optional.of(membership));
+
+        when(groupRoleRepository.findAll()).thenReturn(java.util.List.of(cz.uhk.pro2.tulipani.domain.entity.GroupRole.builder().roleId(1).roleName("spravce").build()));
+
         when(taskRepository.save(any())).thenAnswer(i -> i.getArgument(0));
         when(auditLogRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
@@ -169,6 +214,11 @@ class TaskServiceTest {
 
         var task = cz.uhk.pro2.tulipani.domain.entity.Task.builder().taskId(81).todolistId(40).taskCreator(80).build();
         when(taskRepository.findById(81)).thenReturn(java.util.Optional.of(task));
+
+        var membership = cz.uhk.pro2.tulipani.domain.entity.TodolistUser.builder().todolistId(40).userId(80).isListCreator(true).build();
+        when(todolistUserRepository.findByTodolistIdAndUserId(40, 80)).thenReturn(java.util.Optional.of(membership));
+
+        when(groupRoleRepository.findAll()).thenReturn(java.util.List.of(cz.uhk.pro2.tulipani.domain.entity.GroupRole.builder().roleId(1).roleName("spravce").build()));
 
         when(taskUserRepository.findByTaskId(81)).thenReturn(java.util.List.of());
         when(auditLogRepository.save(any())).thenAnswer(i -> i.getArgument(0));

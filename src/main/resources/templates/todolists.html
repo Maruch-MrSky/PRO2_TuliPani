@@ -2,33 +2,306 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8" />
-  <title>Todolists</title>
+  <title>Dashboard</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 2rem; }
-    ul { list-style: none; padding: 0; }
-    li { margin: 0.5rem 0; }
-    form { margin-top: 1rem; }
+    :root {
+      --bg: #f4f1ea;
+      --panel: #fffdf8;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #d8d2c5;
+      --accent: #1f6f78;
+      --accent-2: #d97706;
+      --danger: #b42318;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f7f1e3 0%, #f4f7f6 100%);
+      color: var(--text);
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      min-height: 100vh;
+    }
+    .sidebar {
+      background: rgba(255, 255, 255, 0.82);
+      border-right: 1px solid var(--line);
+      padding: 1.25rem;
+      backdrop-filter: blur(8px);
+    }
+    .main {
+      padding: 1.5rem;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1rem;
+      box-shadow: 0 12px 30px rgba(31, 41, 55, 0.06);
+      margin-bottom: 1rem;
+    }
+    .muted { color: var(--muted); }
+    .group-list { display: grid; gap: 0.5rem; }
+    .group-link {
+      display: block;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .group-link.active {
+      border-color: var(--accent);
+      background: rgba(31, 111, 120, 0.08);
+    }
+    .task-list { display: grid; gap: 0.75rem; }
+    .task {
+      display: grid;
+      gap: 0.35rem;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: white;
+    }
+    .task-top { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(31, 111, 120, 0.12);
+      color: var(--accent);
+    }
+    .pill.alt { background: rgba(217, 119, 6, 0.12); color: var(--accent-2); }
+    .filters, .forms { display: grid; gap: 0.75rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+    label { display: grid; gap: 0.35rem; font-weight: 700; font-size: 0.95rem; }
+    input, select, button, textarea {
+      font: inherit;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 0.75rem 0.85rem;
+      background: #fff;
+    }
+    textarea { min-height: 92px; resize: vertical; }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .section-title { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 1rem;
+      color: var(--muted);
+      background: rgba(255,255,255,0.7);
+    }
+    @media (max-width: 960px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { border-right: none; border-bottom: 1px solid var(--line); }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <h1>My Todolists</h1>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="card">
+      <div class="section-title">
+        <div>
+          <h1 style="margin: 0;">Welcome, <span th:text="${currentUserName}">User</span></h1>
+          <p class="muted" style="margin: 0.25rem 0 0;">Private and public groups</p>
+        </div>
+      </div>
+      <p class="muted">Signed in with:</p>
+      <strong th:text="${currentUserName}">User</strong>
+      <div class="muted" th:text="${currentUserEmail}"></div>
+    </div>
 
-  <div th:if="${lists == null || #lists.isEmpty(lists)}">
-    <p>No todo lists yet.</p>
-  </div>
+    <div class="card">
+      <h2 style="margin-top: 0;">Private groups</h2>
+      <div class="group-list" th:if="${privateLists != null and !#lists.isEmpty(privateLists)}">
+        <a class="group-link"
+           th:classappend="${selectedTodolistId == list.todolistId} ? ' active'"
+           th:each="list : ${privateLists}"
+           th:href="@{/ui/todolists(authId=${authId}, selectedTodolistId=${list.todolistId}, categoryId=${selectedCategoryId}, state=${selectedState}, search=${search})}"
+           th:text="${list.name}">Private list</a>
+      </div>
+      <div class="empty" th:if="${privateLists == null or #lists.isEmpty(privateLists)}">No private groups yet.</div>
+    </div>
 
-  <ul>
-    <li th:each="t : ${lists}">
-      <a th:href="@{/ui/todolists/{id}(id=${t.todolistId}, authId=${authId})}" th:text="${t.name}">List</a>
-    </li>
-  </ul>
+    <div class="card">
+      <h2 style="margin-top: 0;">Public groups</h2>
+      <div class="group-list" th:if="${publicLists != null and !#lists.isEmpty(publicLists)}">
+        <a class="group-link"
+           th:classappend="${selectedTodolistId == list.todolistId} ? ' active'"
+           th:each="list : ${publicLists}"
+           th:href="@{/ui/todolists(authId=${authId}, selectedTodolistId=${list.todolistId}, categoryId=${selectedCategoryId}, state=${selectedState}, search=${search})}"
+           th:text="${list.name}">Public list</a>
+      </div>
+      <div class="empty" th:if="${publicLists == null or #lists.isEmpty(publicLists)}">No public groups yet.</div>
+    </div>
 
-  <form th:action="@{/ui/todolists}" method="post">
-    <input type="hidden" name="authId" th:value="${authId}" />
-    <input type="text" name="name" placeholder="New list name" required />
-    <input type="text" name="listType" placeholder="Type (optional)" />
-    <button type="submit">Create</button>
-  </form>
+    <div class="card">
+      <h2 style="margin-top: 0;">Create group</h2>
+      <form class="forms" th:action="@{/ui/todolists}" method="post">
+        <input type="hidden" name="authId" th:value="${authId}" />
+        <label>
+          Name
+          <input type="text" name="name" placeholder="e.g. Team Sprint" required />
+        </label>
+        <label>
+          Visibility
+          <select name="listType">
+            <option value="private">Private</option>
+            <option value="public">Public</option>
+          </select>
+        </label>
+        <button type="submit">Create group</button>
+      </form>
+    </div>
 
+    <div class="card">
+      <h2 style="margin-top: 0;">Create category</h2>
+      <form class="forms" th:action="@{/ui/todolists/categories}" method="post">
+        <input type="hidden" name="authId" th:value="${authId}" />
+        <input type="hidden" name="selectedTodolistId" th:value="${selectedTodolistId}" />
+        <input type="hidden" name="categoryId" th:value="${selectedCategoryId}" />
+        <input type="hidden" name="state" th:value="${selectedState}" />
+        <input type="hidden" name="search" th:value="${search}" />
+        <label>
+          Name
+          <input type="text" name="name" placeholder="e.g. Backend" required />
+        </label>
+        <label>
+          Color hex
+          <input type="text" name="colorHex" placeholder="#1f6f78" />
+        </label>
+        <button type="submit">Create category</button>
+      </form>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 style="margin: 0;" th:text="${selectedList != null ? selectedList.name : 'Select a group'}">Group</h1>
+        <p class="muted" style="margin: 0.25rem 0 0;" th:text="${selectedList != null ? selectedList.listType : 'Choose a private or public group from the left'}">Helper text</p>
+      </div>
+      <div class="row">
+        <a class="group-link" th:href="@{/ui/auth/login}">Login</a>
+        <a class="group-link" th:href="@{/ui/auth/register}">Register</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <form class="filters" th:action="@{/ui/todolists}" method="get">
+        <input type="hidden" name="authId" th:value="${authId}" />
+        <input type="hidden" name="selectedTodolistId" th:value="${selectedTodolistId}" />
+        <div class="grid-2">
+          <label>
+            Category
+            <select name="categoryId">
+              <option value="">All categories</option>
+              <option th:each="category : ${categories}"
+                      th:value="${category.categoryId}"
+                      th:selected="${selectedCategoryId != null and selectedCategoryId == category.categoryId}"
+                      th:text="${category.name}">Category</option>
+            </select>
+          </label>
+          <label>
+            State
+            <select name="state">
+              <option value="">All states</option>
+              <option value="todo" th:selected="${selectedState == 'todo'}">Todo</option>
+              <option value="in_progress" th:selected="${selectedState == 'in_progress'}">In progress</option>
+              <option value="done" th:selected="${selectedState == 'done'}">Done</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          Search
+          <input type="text" name="search" th:value="${search}" placeholder="Search by task name or description" />
+        </label>
+        <button type="submit">Filter tasks</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h2 style="margin: 0;">Tasks</h2>
+        <span class="pill" th:text="${tasks != null ? tasks.size() : 0} + ' tasks'">0 tasks</span>
+      </div>
+
+      <div class="task-list" th:if="${tasks != null and !#lists.isEmpty(tasks)}">
+        <article class="task" th:each="task : ${tasks}">
+          <div class="task-top">
+            <strong th:text="${task.name}">Task name</strong>
+            <span class="pill alt" th:text="${task.state}">state</span>
+          </div>
+          <p class="muted" th:text="${task.description != null ? task.description : 'No description'}">Description</p>
+          <div class="row">
+            <span class="pill" th:if="${task.categoryId != null and categoriesById[task.categoryId] != null}"
+                  th:text="${categoriesById[task.categoryId].name}">Category</span>
+            <span class="pill alt" th:if="${task.deadline != null}" th:text="${task.deadline}">Deadline</span>
+          </div>
+          <form class="row" th:action="@{/ui/todolists/{taskId}/state(taskId=${task.taskId})}" method="post">
+            <input type="hidden" name="authId" th:value="${authId}" />
+            <input type="hidden" name="selectedTodolistId" th:value="${selectedTodolistId}" />
+            <input type="hidden" name="categoryId" th:value="${selectedCategoryId}" />
+            <input type="hidden" name="search" th:value="${search}" />
+            <select name="state">
+              <option value="todo" th:selected="${task.state == 'todo'}">Todo</option>
+              <option value="in_progress" th:selected="${task.state == 'in_progress'}">In progress</option>
+              <option value="done" th:selected="${task.state == 'done'}">Done</option>
+            </select>
+            <button type="submit">Change state</button>
+          </form>
+        </article>
+      </div>
+      <div class="empty" th:if="${tasks == null or #lists.isEmpty(tasks)}">No tasks match the current filters.</div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top: 0;">Create task in selected group</h2>
+      <form class="forms" th:action="@{/ui/todolists/tasks}" method="post">
+        <input type="hidden" name="authId" th:value="${authId}" />
+        <input type="hidden" name="selectedTodolistId" th:value="${selectedTodolistId}" />
+        <div class="grid-2">
+          <label>
+            Name
+            <input type="text" name="name" required />
+          </label>
+          <label>
+            Category
+            <select name="categoryId">
+              <option value="">No category</option>
+              <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.name}">Category</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          Description
+          <textarea name="description" placeholder="Short task description"></textarea>
+        </label>
+        <label>
+          Deadline
+          <input type="datetime-local" name="deadline" />
+        </label>
+        <button type="submit" th:disabled="${selectedTodolistId == null}">Create task</button>
+      </form>
+    </div>
+  </main>
+</div>
 </body>
 </html>

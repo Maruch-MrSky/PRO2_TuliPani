@@ -22,21 +22,25 @@ public class AuthService {
     public AuthResponse register(AuthRegisterRequest request) {
         if (request == null) throw new IllegalArgumentException("Missing request");
         try {
-            appUserRepository.findByEmail(request.email()).ifPresent(u -> {
-                throw new IllegalArgumentException("Email already registered");
-            });
-
-            var authId = java.util.UUID.randomUUID();
-            var user = cz.uhk.pro2.tulipani.domain.entity.AppUser.builder()
-                .email(request.email())
-                .name(request.name())
-                .surname(request.surname())
-                .authId(authId)
-                .build();
+            var user = appUserRepository.findByEmail(request.email())
+                .map(existing -> {
+                    existing.setName(request.name());
+                    existing.setSurname(request.surname());
+                    if (existing.getAuthId() == null) {
+                        existing.setAuthId(java.util.UUID.randomUUID());
+                    }
+                    return existing;
+                })
+                .orElseGet(() -> cz.uhk.pro2.tulipani.domain.entity.AppUser.builder()
+                    .email(request.email())
+                    .name(request.name())
+                    .surname(request.surname())
+                    .authId(java.util.UUID.randomUUID())
+                    .build());
 
             user = appUserRepository.save(user);
 
-            return new AuthResponse(authId.toString(), user.getUserId(), user.getEmail(), null);
+            return new AuthResponse(user.getAuthId().toString(), user.getUserId(), user.getEmail(), null);
         } catch (DataAccessException dae) {
             throw new IllegalStateException("Database error during registration: " + dae.getMessage(), dae);
         }
@@ -46,6 +50,11 @@ public class AuthService {
         if (request == null) throw new IllegalArgumentException("Missing request");
         var user = appUserRepository.findByEmail(request.email())
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (user.getAuthId() == null) {
+            user.setAuthId(java.util.UUID.randomUUID());
+            user = appUserRepository.save(user);
+        }
 
         // NOTE: password is not validated - external auth expected. Return authId as token.
         return new AuthResponse(user.getAuthId() != null ? user.getAuthId().toString() : null, user.getUserId(), user.getEmail(), null);

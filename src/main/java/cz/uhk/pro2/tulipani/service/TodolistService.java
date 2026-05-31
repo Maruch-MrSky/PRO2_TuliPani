@@ -34,11 +34,7 @@ public class TodolistService {
 
         todolist = todolistRepository.save(todolist);
 
-        // find 'spravce' group role if exists, fallback to first role
-        var role = groupRoleRepository.findAll().stream()
-            .filter(r -> r.getRoleName() != null && r.getRoleName().equalsIgnoreCase("spravce"))
-            .findFirst()
-            .orElseGet(() -> groupRoleRepository.findAll().stream().findFirst().orElse(null));
+        var role = findOrCreateSpravceRole();
 
         var todolistUser = cz.uhk.pro2.tulipani.domain.entity.TodolistUser.builder()
             .todolistId(todolist.getTodolistId())
@@ -179,5 +175,15 @@ public class TodolistService {
             .build();
 
         auditLogRepository.save(audit);
+    }
+
+    private cz.uhk.pro2.tulipani.domain.entity.GroupRole findOrCreateSpravceRole() {
+        return groupRoleRepository.findAll().stream()
+            .filter(r -> r.getRoleName() != null && r.getRoleName().equalsIgnoreCase("spravce"))
+            .findFirst()
+            .orElseGet(() -> groupRoleRepository.save(
+                cz.uhk.pro2.tulipani.domain.entity.GroupRole.builder()
+                    .roleName("spravce")
+                    .build()));
     }
 }
