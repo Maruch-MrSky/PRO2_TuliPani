@@ -39,14 +39,14 @@ public class TodolistController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TodolistResponse> getTodolist(@PathVariable Long id,
+    public ResponseEntity<TodolistResponse> getTodolist(@PathVariable Integer id,
                                                         @RequestHeader(value = "X-Auth-Id", required = false) String authId) {
         TodolistResponse dto = todolistService.getTodolist(id, authId);
         return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodolist(@PathVariable Long id,
+    public ResponseEntity<Void> deleteTodolist(@PathVariable Integer id,
                                                @RequestHeader(value = "X-Auth-Id", required = false) String authId) {
         todolistService.deleteTodolist(id, authId);
         return ResponseEntity.noContent().build();

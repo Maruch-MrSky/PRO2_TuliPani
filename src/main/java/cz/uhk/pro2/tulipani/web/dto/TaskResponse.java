@@ -1,15 +1,16 @@
 package cz.uhk.pro2.tulipani.web.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record TaskResponse(
-        Long taskId,
+        Integer taskId,
         String name,
         String description,
-        LocalDate deadline,
+        LocalDateTime deadline,
         String state,
-        Long todolistId,
-        Long categoryId,
-        Long taskCreator,
-        Long updatedBy) {
+        Integer todolistId,
+        Integer categoryId,
+        Integer taskCreator,
+        String updatedBy) {
 }

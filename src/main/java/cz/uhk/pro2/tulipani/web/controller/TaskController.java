@@ -2,6 +2,7 @@ package cz.uhk.pro2.tulipani.web.controller;
 
 import cz.uhk.pro2.tulipani.service.TaskService;
 import cz.uhk.pro2.tulipani.web.dto.CreateTaskRequest;
+import cz.uhk.pro2.tulipani.web.dto.TaskResponse;
 import cz.uhk.pro2.tulipani.web.dto.UpdateTaskStatusRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,17 +25,24 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping
-    public ResponseEntity<Void> createTask(@Valid @RequestBody CreateTaskRequest request) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody CreateTaskRequest request,
+                                                   @RequestHeader(value = "X-Auth-Id", required = false) String authId) {
+        TaskResponse created = taskService.createTask(request, authId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> updateTaskStatus(@PathVariable Long id, @Valid @RequestBody UpdateTaskStatusRequest request) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable Integer id,
+                                                         @Valid @RequestBody UpdateTaskStatusRequest request,
+                                                         @RequestHeader(value = "X-Auth-Id", required = false) String authId) {
+        TaskResponse updated = taskService.updateTaskStatus(id, request, authId);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public ResponseEntity<Void> deleteTask(@PathVariable Integer id,
+                                           @RequestHeader(value = "X-Auth-Id", required = false) String authId) {
+        taskService.deleteTask(id, authId);
+        return ResponseEntity.noContent().build();
     }
 }

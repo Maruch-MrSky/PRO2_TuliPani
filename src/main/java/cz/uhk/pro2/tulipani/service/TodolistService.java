@@ -6,8 +6,12 @@ import cz.uhk.pro2.tulipani.domain.repository.TodolistRepository;
 import cz.uhk.pro2.tulipani.domain.repository.TodolistUserRepository;
 import cz.uhk.pro2.tulipani.web.dto.CreateTodolistRequest;
 import cz.uhk.pro2.tulipani.web.dto.TodolistResponse;
+import cz.uhk.pro2.tulipani.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import cz.uhk.pro2.tulipani.domain.repository.AuditLogRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -17,28 +21,169 @@ public class TodolistService {
     private final TodolistUserRepository todolistUserRepository;
     private final AppUserRepository appUserRepository;
     private final GroupRoleRepository groupRoleRepository;
+    private final AuditLogRepository auditLogRepository;
 
     public TodolistResponse createTodolist(CreateTodolistRequest request, String authId) {
-        throw new UnsupportedOperationException("TODO: create todolist");
+        var user = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
+            .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+
+        var todolist = cz.uhk.pro2.tulipani.domain.entity.Todolist.builder()
+            .name(request.name())
+            .listType(request.listType())
+            .build();
+
+        todolist = todolistRepository.save(todolist);
+
+        var role = findOrCreateSpravceRole();
+
+        var todolistUser = cz.uhk.pro2.tulipani.domain.entity.TodolistUser.builder()
+            .todolistId(todolist.getTodolistId())
+            .userId(user.getUserId())
+            .roleId(role != null ? role.getRoleId() : null)
+            .isListCreator(Boolean.TRUE)
+            .build();
+
+        todolistUserRepository.save(todolistUser);
+
+        return new TodolistResponse(todolist.getTodolistId(), todolist.getName(), todolist.getListType());
     }
 
-    public void addUserToTodolist(Long todolistId, Long userId, Long roleId) {
-        throw new UnsupportedOperationException("TODO: add user to todolist");
+    public void addUserToTodolist(Integer todolistId, Integer userId, Integer roleId) {
+        var list = todolistRepository.findById(todolistId)
+            .orElseThrow(() -> new IllegalArgumentException("Todolist not found"));
+
+        var user = appUserRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (todolistUserRepository.existsByTodolistIdAndUserId(todolistId, userId)) {
+            throw new IllegalStateException("User already member of todolist");
+        }
+
+        var tu = cz.uhk.pro2.tulipani.domain.entity.TodolistUser.builder()
+            .todolistId(todolistId)
+            .userId(userId)
+            .roleId(roleId)
+            .isListCreator(Boolean.FALSE)
+            .build();
+
+        todolistUserRepository.save(tu);
+
+        var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
+            .action("add_user_to_todolist")
+            .logTime(java.time.LocalDateTime.now())
+            .userId(userId)
+            .taskId(null)
+            .build();
+
+        auditLogRepository.save(audit);
     }
 
-    public void removeUserFromTodolist(Long todolistId, Long userId) {
-        throw new UnsupportedOperationException("TODO: remove user from todolist");
+    public void removeUserFromTodolist(Integer todolistId, Integer userId) {
+        var tu = todolistUserRepository.findByTodolistIdAndUserId(todolistId, userId)
+            .orElseThrow(() -> new IllegalArgumentException("Todolist membership not found"));
+
+        todolistUserRepository.delete(tu);
+
+        var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
+            .action("remove_user_from_todolist")
+            .logTime(java.time.LocalDateTime.now())
+            .userId(userId)
+            .taskId(null)
+            .build();
+
+        auditLogRepository.save(audit);
     }
 
+    @Transactional(readOnly = true)
     public java.util.List<TodolistResponse> listTodolists(String authId) {
-        throw new UnsupportedOperationException("TODO: list todolists");
+        var user = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
+                .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+
+        var memberships = todolistUserRepository.findByUserId(user.getUserId());
+
+        return memberships.stream()
+                .map(ut -> {
+                    var t = ut.getTodolist();
+                    if (t == null) {
+                        // fallback: load by id
+                        t = todolistRepository.findById(ut.getTodolistId()).orElse(null);
+                    }
+                    return t == null ? null : new TodolistResponse(t.getTodolistId(), t.getName(), t.getListType());
+                })
+                .filter(java.util.Objects::nonNull)
+                .toList();
     }
 
-    public TodolistResponse getTodolist(Long id, String authId) {
-        throw new UnsupportedOperationException("TODO: get todolist");
+    public TodolistResponse getTodolist(Integer id, String authId) {
+        var actor = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
+            .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+
+        var membership = todolistUserRepository.findByTodolistIdAndUserId(id, actor.getUserId())
+            .orElseThrow(() -> new IllegalStateException("Actor is not member of todolist"));
+
+        var t = todolistRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Todolist not found"));
+
+        return new TodolistResponse(t.getTodolistId(), t.getName(), t.getListType());
     }
 
-    public void deleteTodolist(Long id, String authId) {
-        throw new UnsupportedOperationException("TODO: delete todolist");
+    public void deleteTodolist(Integer id, String authId) {
+        var actor = appUserRepository.findByAuthId(AuthUtils.parseAuthId(authId))
+            .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+
+        var membership = todolistUserRepository.findByTodolistIdAndUserId(id, actor.getUserId())
+            .orElseThrow(() -> new IllegalStateException("Actor is not member of todolist"));
+
+        var allowed = Boolean.TRUE.equals(membership.getIsListCreator())
+            || (membership.getRole() != null && "spravce".equalsIgnoreCase(membership.getRole().getRoleName()));
+
+        if (!allowed) {
+            throw new IllegalStateException("Actor lacks permission to delete todolist");
+        }
+
+        todolistRepository.deleteById(id);
+
+        var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
+            .action("delete_todolist")
+            .logTime(java.time.LocalDateTime.now())
+            .userId(actor.getUserId())
+            .taskId(null)
+            .build();
+
+        auditLogRepository.save(audit);
+    }
+
+    // new helper: get members of todolist
+    public java.util.List<cz.uhk.pro2.tulipani.domain.entity.TodolistUser> getTodolistMembers(Integer todolistId) {
+        return todolistUserRepository.findAll().stream()
+                .filter(tu -> todolistId.equals(tu.getTodolistId()))
+                .toList();
+    }
+
+    // new helper: change role
+    @Transactional
+    public void changeUserRoleInTodolist(int todolistId, int userId, int newRoleId) {
+        var tu = todolistUserRepository.findByTodolistIdAndUserId(todolistId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Todolist membership not found"));
+        tu.setRoleId(newRoleId);
+        todolistUserRepository.save(tu);
+
+        var audit = cz.uhk.pro2.tulipani.domain.entity.AuditLog.builder()
+            .action("change_user_role_in_todolist")
+            .logTime(java.time.LocalDateTime.now())
+            .userId(userId)
+            .taskId(null)
+            .build();
+
+        auditLogRepository.save(audit);
+    }
+
+    private cz.uhk.pro2.tulipani.domain.entity.GroupRole findOrCreateSpravceRole() {
+        return groupRoleRepository.findAll().stream()
+            .filter(r -> r.getRoleName() != null && r.getRoleName().equalsIgnoreCase("spravce"))
+            .findFirst()
+            .orElseGet(() -> groupRoleRepository.save(
+                cz.uhk.pro2.tulipani.domain.entity.GroupRole.builder()
+                    .roleName("spravce")
+                    .build()));
     }
 }

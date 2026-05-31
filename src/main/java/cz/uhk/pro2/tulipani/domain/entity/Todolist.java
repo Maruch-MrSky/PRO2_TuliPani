@@ -5,7 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,11 +28,14 @@ public class Todolist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "todolist_id")
-    private Long todolistId;
+    private Integer todolistId;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
     @Column(name = "list_type")
     private String listType;
+
+    @OneToMany(mappedBy = "todolist", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks;
 }

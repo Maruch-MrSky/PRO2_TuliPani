@@ -5,6 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,17 +27,29 @@ public class TodolistUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "todolist_users_id")
-    private Long todolistUsersId;
+    private Integer todolistUsersId;
 
     @Column(name = "user_id")
-    private Long userId;
+    private Integer userId;
 
     @Column(name = "todolist_id")
-    private Long todolistId;
+    private Integer todolistId;
 
-    @Column(name = "role_id")
-    private Long roleId;
+    @Column(name = "role_id", nullable = false)
+    private Integer roleId;
 
     @Column(name = "is_list_creator")
     private Boolean isListCreator;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private AppUser user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todolist_id", insertable = false, updatable = false)
+    private Todolist todolist;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", insertable = false, updatable = false)
+    private GroupRole role;
 }

@@ -1,12 +1,16 @@
 package cz.uhk.pro2.tulipani.domain.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,28 +30,36 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
-    private Long taskId;
+    private Integer taskId;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
     @Column(columnDefinition = "text")
     private String description;
 
-    private LocalDate deadline;
+    private LocalDateTime deadline;
 
-    @Column(nullable = false)
+    @Column
     private String state;
 
     @Column(name = "todolist_id")
-    private Long todolistId;
+    private Integer todolistId;
 
     @Column(name = "category_id")
-    private Long categoryId;
+    private Integer categoryId;
 
     @Column(name = "task_creator")
-    private Long taskCreator;
+    private Integer taskCreator;
 
     @Column(name = "updated_by")
-    private Long updatedBy;
+    private String updatedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todolist_id", insertable = false, updatable = false)
+    private Todolist todolist;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    private Category category;
 }
